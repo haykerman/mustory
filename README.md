@@ -1,11 +1,11 @@
 # mustory
 
-Your music and video history, told back to you. mustory is a set of three [Claude Code](https://claude.com/claude-code) skills that turn your own data exports into Spotify Wrapped–style pages, any time of year, for any span of years:
+Your music and video history, told back to you. mustory is a [Claude Code](https://claude.com/claude-code) plugin that turns your own data exports into year-in-review story pages, any time of year, for any span of years:
 
 | Skill | Needs | Makes |
 |---|---|---|
-| `youtube-wrapped` | Google Takeout export of YouTube history | Eras, obsessions, forgotten favorites, seasons, night-owl hours, rabbit holes, rituals, odd watches, a personality read |
-| `spotify-wrapped` | Spotify data export (Extended streaming history is best) | Lifetime hours, loops, the skip button, autopilot vs songs you picked, focus music, devices, travel, discovery, marathons |
+| `youtube-story` | Google Takeout export of YouTube history | Eras, obsessions, forgotten favorites, seasons, night-owl hours, rabbit holes, rituals, odd watches, a personality read |
+| `spotify-story` | Spotify data export (Extended streaming history is best) | Lifetime hours, loops, the skip button, autopilot vs songs you picked, focus music, devices, travel, discovery, marathons |
 | `youtube-vs-spotify` | Both of the above | Which app does what, when you use each, where artists are found first, artists that live on one app, songs you play everywhere |
 
 Scripts do every count and draw every chart. Claude does the parts that need judgment (labeling channels, tagging moods, writing the story), and a fact checker makes sure every number in the story comes from your data. Everything stays on your computer.
@@ -35,25 +35,31 @@ Not sure what you need? Say "help me get started with mustory" and Claude walks 
 
 Open a Claude Code chat anywhere and say one of:
 
-- "Make my YouTube Wrapped."
-- "Make my Spotify Wrapped."
+- "Tell the story of my YouTube history."
+- "Make my Spotify story."
 - "Compare my YouTube and Spotify."
+- Not sure? "Help me get started with mustory."
 
 Claude finds your download in Downloads (or asks), keeps its working files in `Documents/mustory/`, and walks you through the rest. You get a single HTML page; in Claude apps that can publish, it becomes a private link you can share.
 
 ## Repo layout
 
 ```
-.claude-plugin/         plugin.json and marketplace.json (the plugin install reads these)
-skills/
-  start/                front door: what you need, how to download it, plain-language setup
-  youtube-wrapped/      SKILL.md, scripts/, assets/template.html, references/story.md
-  spotify-wrapped/      same shape
-  youtube-vs-spotify/   same shape
-docs/ideas.md           the question catalog the pages answer, plus ideas not built yet
-install.sh              link the skills into ~/.claude/skills
-build.sh                check shared code is in sync, zip each skill into dist/
+.claude-plugin/marketplace.json   lists the plugin, so /plugin install finds it
+plugin/                           the plugin itself (only this folder is shipped)
+  .claude-plugin/                 plugin.json and icon.png
+  skills/
+    start/                        front door: what you need, how to download it, plain-language setup
+    youtube-story/                SKILL.md, scripts/, assets/template.html, references/story.md
+    spotify-story/                same shape
+    youtube-vs-spotify/           same shape
+  README.md, LICENSE
+docs/ideas.md                     the question catalog the pages answer, plus ideas not built yet
+install.sh                        link the skills into ~/.claude/skills (for development)
+build.sh                          check shared code is in sync, zip each skill into dist/
 ```
+
+The plugin lives in its own folder because the plugin directory accepts only Markdown, text, JSON, YAML and images from individual developers, so the shell scripts stay outside it.
 
 Each skill is self-contained so it can be shared on its own. That means `takeout.py`, `classify.py` and `spotify.py` exist in more than one skill. Edit one copy, then let `./build.sh` tell you which others to update.
 

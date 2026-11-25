@@ -1,7 +1,7 @@
 {
   "$schema": "https://code.claude.com/schemas/marketplace.json",
   "name": "mustory",
-  "description": "Wrapped-style stories from your own YouTube and Spotify history.",
+  "description": "year-in-review stories from your own YouTube and Spotify history.",
   "owner": {
     "name": "haykerman",
     "url": "https://github.com/haykerman"
@@ -9,15 +9,15 @@
   "plugins": [
     {
       "name": "mustory",
-      "source": "./",
-      "description": "Turn your YouTube and Spotify data exports into Wrapped-style story pages: eras, obsessions, forgotten favorites, skips, loops, travel, and how your taste changed.",
+      "source": "./plugin",
+      "description": "Turn your YouTube and Spotify data exports into year-in-review story pages: eras, obsessions, forgotten favorites, skips, loops, travel, and how your taste changed.",
       "homepage": "https://github.com/haykerman/mustory",
       "repository": "https://github.com/haykerman/mustory",
       "category": "productivity",
       "keywords": [
         "spotify",
         "youtube",
-        "wrapped",
+        "year in review",
         "music"
       ],
       "license": "MIT"

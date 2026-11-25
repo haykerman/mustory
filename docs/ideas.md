@@ -4,7 +4,7 @@ The questions mustory's pages answer, and some it doesn't yet. Each lists the da
 
 ## Built
 
-### YouTube (`youtube-wrapped`)
+### YouTube (`youtube-story`)
 
 - **Eras:** long stretches of one artist on repeat. *Watch history.*
 - **Song obsessions:** a single video played again and again within a few weeks.
@@ -26,7 +26,7 @@ The questions mustory's pages answer, and some it doesn't yet. Each lists the da
 - **Search bar:** most-typed searches.
 - **Personality and how it changed:** written from all of the above.
 
-### Spotify (`spotify-wrapped`)
+### Spotify (`spotify-story`)
 
 Everything above that fits music, plus:
 
