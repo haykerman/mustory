@@ -41,7 +41,8 @@ p { margin: 0; max-width: 65ch; }
 .muted { color: var(--ink-3); } .flood .muted { color: color-mix(in srgb, var(--dark) 65%, transparent); }
 .mono { font-family: var(--mono); font-size: 12px; }
 .two { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; align-items: center; }
-.stack { display: grid; gap: 20px; align-content: start; }
+.two > * { min-width: 0; }
+.stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-content: start; }
 .made-of { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
 .made-of li { font: 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px; background: color-mix(in srgb, var(--dark) 12%, transparent); }
 .figure-card { background: var(--dark); color: var(--ink); border-radius: 22px; padding: 22px; display: grid; gap: 16px; }
@@ -100,7 +101,7 @@ p { margin: 0; max-width: 65ch; }
 .badge .row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
 .badge .track i { background: var(--c); }
 .badge p { font-size: 13px; color: var(--ink-2); }
-.share { width: min(340px, 100%); aspect-ratio: 9 / 16; margin: 0 auto; border-radius: 26px; background: var(--amber); color: var(--dark); padding: 26px; display: grid; grid-template-rows: auto 1fr auto auto auto; gap: 12px; text-align: center; box-shadow: 0 20px 60px rgb(0 0 0 / .4); box-sizing: border-box; }
+.share { width: min(340px, 100%); aspect-ratio: 9 / 16; margin: 0 auto; border-radius: 26px; background: var(--card-bg, var(--amber)); color: var(--card-ink, var(--dark)); padding: 26px; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto auto auto; gap: 12px; text-align: center; box-shadow: 0 20px 60px rgb(0 0 0 / .4); box-sizing: border-box; }
 .share .fig { display: grid; place-items: center; }
 .share .fig svg { width: 72%; height: auto; }
 .share h3 { font-size: 30px; line-height: .95; font-weight: 800; }
@@ -135,6 +136,7 @@ footer ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 
     </div>
     <aside class="figure-card" aria-labelledby="h-portrait">
       <div class="fig" id="fig-hero"></div>
+      <p class="mono muted" id="animal-cap" style="text-align:center;margin:-6px auto 0"></p>
       <h3 id="h-portrait">If you were a person in a novel</h3>
       <dl class="portrait" id="l-portrait"></dl>
     </aside>
@@ -147,7 +149,8 @@ footer ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 
       <p class="eyebrow">The bridge</p>
       <h2 id="h-taste" data-s="taste.h"></h2>
       <p class="lede" data-s="taste.lede"></p>
-      <ul class="genres" id="l-genres" aria-label="Share of listening by genre"></ul>
+      <ul class="genres" id="l-genres" aria-label="Share of music by genre"></ul>
+      <div class="stack" id="life-wrap" hidden style="gap:12px"><h3>What else fills your screen</h3><ul class="genres" id="l-life" aria-label="Share of plays by part of life"></ul></div>
     </div>
     <figure class="radar" style="margin:0;display:grid;gap:8px">
       <div id="c-radar"></div>
@@ -191,7 +194,7 @@ footer ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 
     </div>
     <figure class="clock" style="margin:0;display:grid;gap:8px">
       <div id="c-clock"></div>
-      <figcaption class="mono muted" style="text-align:center">Your real 24-hour clock: when the music plays</figcaption>
+      <figcaption class="mono muted" style="text-align:center" id="cap-clock">Your real 24-hour clock</figcaption>
     </figure>
   </div>
 </section>
@@ -266,66 +269,108 @@ const almost = D.traits.filter(t => t.score >= 35 && t.score < 60).slice(0, 3);
 const ch = S.character || {};
 const madeOf = (ch.made_of || earned.slice(0, 5).map(t => t.key)).map(k => TR[k]).filter(Boolean);
 
-/* ---------- the figurine: drawn from traits, styled by character.look ---------- */
-const SKIN = { a: '#f6d3b3', b: '#e8b48f', c: '#c98b62', d: '#a0673f', e: '#6e4428', f: '#4a2e1c', blue: '#8fb3ff', green: '#8fd6a8', lilac: '#c9b8ff' };
-const HAIRC = { black: '#1d1a22', brown: '#5a3a24', blonde: '#e3c172', red: '#b4532a', gray: '#9aa0ad', pink: '#ff8fb8', blue: '#5f86f5', green: '#239e74' };
+/* ---------- the figurine: an animal picked from the traits, styled by character.look ---------- */
 const OUTC = { navy: '#283252', amber: '#ffb02e', lilac: '#c9b8ff', aqua: '#9fe3df', blue: '#5f86f5', rose: '#d14b6e', ochre: '#b58a17', green: '#239e74', violet: '#9a6fe0', rust: '#c2602f', black: '#14151c' };
-function pick(obj, key, fallback) { return obj[key] || obj[fallback]; }
+const ANIMAL_OF = {
+  night_owl: 'owl', well_informed: 'owl', explorer: 'fox', experimenter: 'fox', asks_questions: 'fox', free_thinker: 'wolf', decisive: 'wolf',
+  loyalist: 'dog', creature_of_habit: 'dog', down_to_earth: 'dog', go_with_the_flow: 'cat', shape_shifter: 'cat', restless: 'cat',
+  comfort_seeker: 'bear', marathoner: 'bear', rabbit_holer: 'rabbit', party_starter: 'otter', class_clown: 'otter', weekend_person: 'otter',
+  romantic: 'deer', heart_on_sleeve: 'deer', crush: 'deer', seasonal_soul: 'squirrel', all_in: 'squirrel', deep_worker: 'panda', calm: 'panda',
+  patient: 'panda', self_improver: 'panda', gamer: 'raccoon', gadget_head: 'raccoon', story_lover: 'raccoon', maker: 'beaver', lifelong_learner: 'beaver',
+  globetrotter: 'bird', early_bird: 'bird', music_first: 'bird',
+};
+const ANIMALS = {
+  owl:      { name: 'owl',      fur: '#8a6a4a', muzzle: '#e9d9bf', ears: 'tufts', face: 'owl' },
+  fox:      { name: 'fox',      fur: '#e07a3a', muzzle: '#f3efe6', ears: 'pointy', inner: '#3a2418' },
+  wolf:     { name: 'wolf',     fur: '#8d93a3', muzzle: '#dfe2ea', ears: 'pointy', inner: '#4a4f5e' },
+  dog:      { name: 'dog',      fur: '#c89a5b', muzzle: '#f1dfc0', ears: 'floppy', inner: '#8a5f30', tongue: true },
+  cat:      { name: 'cat',      fur: '#a6a9b8', muzzle: '#e6e8ef', ears: 'pointy', inner: '#e8a0b4', whiskers: true },
+  bear:     { name: 'bear',     fur: '#7a5232', muzzle: '#c9a27a', ears: 'round', inner: '#5a3a22' },
+  rabbit:   { name: 'rabbit',   fur: '#e9e3da', muzzle: '#ffffff', ears: 'long', inner: '#f0a8b8', teeth: true, nose: '#e07a90' },
+  otter:    { name: 'otter',    fur: '#8a5a3c', muzzle: '#e9d2b4', ears: 'tiny', whiskers: true },
+  deer:     { name: 'deer',     fur: '#b9824f', muzzle: '#f1dfc0', ears: 'side', inner: '#e0b48a', antlers: true },
+  squirrel: { name: 'squirrel', fur: '#c0673a', muzzle: '#f1dfc0', ears: 'pointy', inner: '#8a4422', tail: true, teeth: true },
+  panda:    { name: 'panda',    fur: '#f3efe6', muzzle: '#ffffff', ears: 'round', inner: '#14151c', earColor: '#14151c', patches: true },
+  raccoon:  { name: 'raccoon',  fur: '#8d8f98', muzzle: '#eceef3', ears: 'pointy', inner: '#3a3c44', mask: true },
+  beaver:   { name: 'beaver',   fur: '#8a5a34', muzzle: '#c9a27a', ears: 'tiny', teeth: true },
+  bird:     { name: 'bluebird', fur: '#5f86f5', muzzle: '#f3efe6', ears: 'crest', face: 'bird' },
+};
+function pickAnimal() {
+  const want = ch.look?.animal;
+  if (want && ANIMALS[want]) return [want, []];
+  const score = {}, why = {};
+  D.traits.forEach(t => { const a = ANIMAL_OF[t.key]; if (!a || t.score < 35) return; score[a] = (score[a] || 0) + t.score - 35; (why[a] = why[a] || []).push(t.name); });
+  const best = Object.keys(score).sort((a, b) => score[b] - score[a])[0] || 'cat';
+  return [best, why[best] || []];
+}
+const [ANIMAL, ANIMAL_WHY] = pickAnimal();
 function lookFor() {
   const L = Object.assign({}, ch.look || {});
   const has_ = k => (TR[k]?.score || 0) >= 60;
-  L.skin = L.skin || 'c';
-  L.hair = L.hair || (has_('free_thinker') ? 'spiky' : has_('romantic') ? 'long' : has_('party_starter') ? 'curly' : 'short');
-  L.hair_color = L.hair_color || 'brown';
-  L.outfit = L.outfit || (has_('free_thinker') ? 'jacket' : has_('deep_worker') ? 'hoodie' : has_('seasonal_soul') || has_('romantic') ? 'sweater' : 'tee');
-  L.outfit_color = L.outfit_color || (has_('night_owl') ? 'violet' : has_('party_starter') ? 'rose' : 'blue');
-  L.eyes = L.eyes || (has_('party_starter') ? 'sunglasses' : has_('night_owl') ? 'sleepy' : has_('experimenter') || has_('deep_worker') ? 'glasses' : 'dots');
+  L.outfit = L.outfit || (has_('free_thinker') ? 'jacket' : has_('deep_worker') || has_('gamer') ? 'hoodie' : has_('seasonal_soul') || has_('romantic') ? 'sweater' : 'tee');
+  L.outfit_color = L.outfit_color || (has_('night_owl') ? 'violet' : has_('party_starter') ? 'rose' : has_('free_thinker') ? 'black' : 'blue');
+  L.eyes = L.eyes || (has_('party_starter') ? 'sunglasses' : has_('night_owl') ? 'sleepy' : has_('experimenter') || has_('lifelong_learner') ? 'glasses' : 'dots');
   const auto = [['night_owl', 'moon'], ['early_bird', 'coffee'], ['globetrotter', 'plane'], ['deep_worker', 'laptop'], ['comfort_seeker', 'repeat'],
-    ['explorer', 'compass'], ['seasonal_soul', 'sun'], ['romantic', 'heart'], ['heart_on_sleeve', 'heart'], ['restless', 'bolt'], ['loyalist', 'star'], ['party_starter', 'sparkle']];
+    ['explorer', 'compass'], ['seasonal_soul', 'sun'], ['romantic', 'heart'], ['heart_on_sleeve', 'heart'], ['restless', 'bolt'], ['loyalist', 'star'],
+    ['party_starter', 'sparkle'], ['class_clown', 'sparkle'], ['lifelong_learner', 'book'], ['maker', 'pencil'], ['gamer', 'gamepad'], ['story_lover', 'film']];
   L.props = (L.props || [...new Set(auto.filter(([k]) => has_(k)).map(([, p]) => p))]).slice(0, 3);
   return L;
 }
 function figurine(target, label, bg) {
-  const L = lookFor();
+  const L = lookFor(), A = ANIMALS[ANIMAL], K = '#14151c';
   const s = svg(200, 220, label, '0 0 200 220');
-  const skin = pick(SKIN, L.skin, 'c'), hair = pick(HAIRC, L.hair_color, 'brown'), out = pick(OUTC, L.outfit_color, 'blue');
+  const out = OUTC[L.outfit_color] || OUTC.blue, fur = A.fur, earC = A.earColor || fur;
   el(s, 'circle', { cx: 100, cy: 112, r: 92, fill: bg });
   const g = el(s, 'g', {});
-  // long hair sits behind the head
-  if (L.hair === 'long') el(g, 'path', { d: 'M58 92 Q56 150 70 166 L130 166 Q144 150 142 92 Z', fill: hair });
-  // body + outfit
-  el(g, 'path', { d: 'M42 214 Q44 160 100 154 Q156 160 158 214 Z', fill: out });
-  if (L.outfit === 'jacket') { el(g, 'path', { d: 'M100 156 L84 214 L78 214 L76 166 Z', fill: '#14151c' }); el(g, 'path', { d: 'M100 156 L116 214 L122 214 L124 166 Z', fill: '#14151c' }); el(g, 'path', { d: 'M88 158 L100 182 L112 158 Z', fill: '#f3efe6' }); }
-  if (L.outfit === 'hoodie') { el(g, 'path', { d: 'M70 160 Q100 186 130 160', fill: 'none', stroke: 'rgba(0,0,0,.25)', 'stroke-width': 6, 'stroke-linecap': 'round' }); el(g, 'line', { x1: 92, y1: 172, x2: 92, y2: 192, stroke: '#f3efe6', 'stroke-width': 2 }); el(g, 'line', { x1: 108, y1: 172, x2: 108, y2: 192, stroke: '#f3efe6', 'stroke-width': 2 }); }
-  if (L.outfit === 'sweater') { for (let y = 176; y < 212; y += 12) el(g, 'path', { d: `M50 ${y} Q100 ${y - 6} 150 ${y}`, fill: 'none', stroke: 'rgba(255,255,255,.18)', 'stroke-width': 4 }); el(g, 'path', { d: 'M78 158 Q100 170 122 158', fill: 'none', stroke: 'rgba(0,0,0,.25)', 'stroke-width': 6 }); }
-  if (L.outfit === 'tee') el(g, 'path', { d: 'M84 156 Q100 168 116 156', fill: skin });
-  // neck + head
-  el(g, 'rect', { x: 90, y: 136, width: 20, height: 22, rx: 6, fill: skin });
-  el(g, 'ellipse', { cx: 100, cy: 104, rx: 36, ry: 40, fill: skin });
-  // hair on top
-  const H = {
-    short: 'M64 100 Q62 60 100 60 Q138 60 136 100 Q128 80 100 80 Q72 80 64 100 Z',
-    long: 'M64 104 Q60 58 100 58 Q140 58 136 104 Q130 76 100 76 Q70 76 64 104 Z',
-    curly: 'M62 98 Q56 76 70 70 Q70 56 86 58 Q94 48 108 56 Q124 50 130 64 Q146 70 138 98 Q128 80 100 80 Q72 80 62 98 Z',
-    spiky: 'M64 98 L60 70 L76 78 L80 54 L92 74 L100 50 L108 74 L120 54 L124 78 L140 70 L136 98 Q126 80 100 80 Q74 80 64 98 Z',
-    bun: 'M64 100 Q62 62 100 62 Q138 62 136 100 Q128 80 100 80 Q72 80 64 100 Z',
-    buzz: 'M66 96 Q66 64 100 64 Q134 64 134 96 Q124 78 100 78 Q76 78 66 96 Z',
+  if (A.tail) el(g, 'path', { d: 'M138 200 Q182 190 176 140 Q170 100 146 110 Q166 130 150 160 Q140 180 138 200 Z', fill: fur });
+  // ears behind the head
+  const E = {
+    pointy: () => { el(g, 'path', { d: 'M62 90 L60 34 L98 70 Z', fill: earC }); el(g, 'path', { d: 'M138 90 L140 34 L102 70 Z', fill: earC }); el(g, 'path', { d: 'M67 78 L66 46 L88 68 Z', fill: A.inner }); el(g, 'path', { d: 'M133 78 L134 46 L112 68 Z', fill: A.inner }); },
+    round: () => { el(g, 'circle', { cx: 68, cy: 70, r: 15, fill: earC }); el(g, 'circle', { cx: 132, cy: 70, r: 15, fill: earC }); el(g, 'circle', { cx: 68, cy: 70, r: 7, fill: A.inner }); el(g, 'circle', { cx: 132, cy: 70, r: 7, fill: A.inner }); },
+    long: () => { el(g, 'ellipse', { cx: 82, cy: 40, rx: 11, ry: 34, fill: fur, transform: 'rotate(-10 82 40)' }); el(g, 'ellipse', { cx: 118, cy: 40, rx: 11, ry: 34, fill: fur, transform: 'rotate(10 118 40)' }); el(g, 'ellipse', { cx: 82, cy: 42, rx: 5, ry: 24, fill: A.inner, transform: 'rotate(-10 82 42)' }); el(g, 'ellipse', { cx: 118, cy: 42, rx: 5, ry: 24, fill: A.inner, transform: 'rotate(10 118 42)' }); },
+    floppy: () => { el(g, 'ellipse', { cx: 50, cy: 92, rx: 14, ry: 30, fill: A.inner, transform: 'rotate(38 50 92)' }); el(g, 'ellipse', { cx: 150, cy: 92, rx: 14, ry: 30, fill: A.inner, transform: 'rotate(-38 150 92)' }); },
+    side: () => { el(g, 'ellipse', { cx: 56, cy: 84, rx: 18, ry: 9, fill: fur, transform: 'rotate(-25 56 84)' }); el(g, 'ellipse', { cx: 144, cy: 84, rx: 18, ry: 9, fill: fur, transform: 'rotate(25 144 84)' }); el(g, 'ellipse', { cx: 57, cy: 84, rx: 10, ry: 4, fill: A.inner, transform: 'rotate(-25 57 84)' }); el(g, 'ellipse', { cx: 143, cy: 84, rx: 10, ry: 4, fill: A.inner, transform: 'rotate(25 143 84)' }); },
+    tiny: () => { el(g, 'circle', { cx: 72, cy: 76, r: 8, fill: fur }); el(g, 'circle', { cx: 128, cy: 76, r: 8, fill: fur }); },
+    tufts: () => { el(g, 'path', { d: 'M66 84 L62 52 L86 72 Z', fill: fur }); el(g, 'path', { d: 'M134 84 L138 52 L114 72 Z', fill: fur }); },
+    crest: () => { el(g, 'path', { d: 'M96 70 Q86 40 100 34 Q98 52 108 46 Q104 60 106 70 Z', fill: fur }); },
   };
-  if (L.hair === 'bun') el(g, 'circle', { cx: 100, cy: 54, r: 14, fill: hair });
-  if (L.hair === 'curly') [[66, 92, 11], [70, 76, 12], [82, 66, 12], [98, 62, 13], [114, 66, 12], [128, 76, 12], [134, 92, 11]].forEach(([cx, cy, r]) => el(g, 'circle', { cx, cy, r, fill: hair }));
-  if (L.hair !== 'none') el(g, 'path', { d: H[L.hair] || H.short, fill: hair });
-  // face
-  if (L.eyes === 'sunglasses') { el(g, 'rect', { x: 74, y: 98, width: 22, height: 13, rx: 5, fill: '#14151c' }); el(g, 'rect', { x: 104, y: 98, width: 22, height: 13, rx: 5, fill: '#14151c' }); el(g, 'line', { x1: 96, y1: 103, x2: 104, y2: 103, stroke: '#14151c', 'stroke-width': 3 }); }
-  else if (L.eyes === 'sleepy') { el(g, 'path', { d: 'M78 106 Q85 110 92 106', fill: 'none', stroke: '#14151c', 'stroke-width': 3, 'stroke-linecap': 'round' }); el(g, 'path', { d: 'M108 106 Q115 110 122 106', fill: 'none', stroke: '#14151c', 'stroke-width': 3, 'stroke-linecap': 'round' }); }
-  else { el(g, 'circle', { cx: 86, cy: 105, r: 4, fill: '#14151c' }); el(g, 'circle', { cx: 114, cy: 105, r: 4, fill: '#14151c' }); if (L.eyes === 'glasses') { el(g, 'circle', { cx: 86, cy: 105, r: 10, fill: 'none', stroke: '#14151c', 'stroke-width': 2.5 }); el(g, 'circle', { cx: 114, cy: 105, r: 10, fill: 'none', stroke: '#14151c', 'stroke-width': 2.5 }); el(g, 'line', { x1: 96, y1: 105, x2: 104, y2: 105, stroke: '#14151c', 'stroke-width': 2.5 }); } }
-  el(g, 'path', { d: 'M90 124 Q100 131 110 124', fill: 'none', stroke: '#14151c', 'stroke-width': 3, 'stroke-linecap': 'round' });
-  el(g, 'circle', { cx: 78, cy: 118, r: 5, fill: '#d14b6e', opacity: .25 }); el(g, 'circle', { cx: 122, cy: 118, r: 5, fill: '#d14b6e', opacity: .25 });
+  (E[A.ears] || E.round)();
+  if (A.antlers) { el(g, 'path', { d: 'M76 72 L66 40 M70 52 L56 46 M68 46 L72 30', fill: 'none', stroke: '#e3c172', 'stroke-width': 5, 'stroke-linecap': 'round' }); el(g, 'path', { d: 'M124 72 L134 40 M130 52 L144 46 M132 46 L128 30', fill: 'none', stroke: '#e3c172', 'stroke-width': 5, 'stroke-linecap': 'round' }); }
+  // body in an outfit
+  el(g, 'path', { d: 'M44 214 Q46 158 100 150 Q154 158 156 214 Z', fill: out });
+  if (L.outfit === 'jacket') { el(g, 'path', { d: 'M100 152 L84 214 L78 214 L76 164 Z', fill: K }); el(g, 'path', { d: 'M100 152 L116 214 L122 214 L124 164 Z', fill: K }); el(g, 'path', { d: 'M88 156 L100 180 L112 156 Z', fill: A.muzzle }); }
+  if (L.outfit === 'hoodie') { el(g, 'path', { d: 'M70 158 Q100 184 130 158', fill: 'none', stroke: 'rgba(0,0,0,.25)', 'stroke-width': 6, 'stroke-linecap': 'round' }); el(g, 'line', { x1: 92, y1: 170, x2: 92, y2: 190, stroke: '#f3efe6', 'stroke-width': 2 }); el(g, 'line', { x1: 108, y1: 170, x2: 108, y2: 190, stroke: '#f3efe6', 'stroke-width': 2 }); }
+  if (L.outfit === 'sweater') { for (let y = 184; y < 212; y += 12) el(g, 'path', { d: `M${56 - (y - 184) / 4} ${y} Q100 ${y - 6} ${144 + (y - 184) / 4} ${y}`, fill: 'none', stroke: 'rgba(255,255,255,.18)', 'stroke-width': 4 }); el(g, 'path', { d: 'M78 156 Q100 168 122 156', fill: 'none', stroke: 'rgba(0,0,0,.25)', 'stroke-width': 6 }); }
+  if (L.outfit === 'tee') el(g, 'path', { d: 'M82 154 Q100 168 118 154', fill: A.muzzle });
+  // head
+  el(g, 'ellipse', { cx: 100, cy: 106, rx: 40, ry: 38, fill: fur });
+  if (A.face === 'owl') { el(g, 'circle', { cx: 84, cy: 100, r: 15, fill: A.muzzle }); el(g, 'circle', { cx: 116, cy: 100, r: 15, fill: A.muzzle }); }
+  if (A.patches) { el(g, 'ellipse', { cx: 84, cy: 102, rx: 11, ry: 14, fill: K, transform: 'rotate(25 84 102)' }); el(g, 'ellipse', { cx: 116, cy: 102, rx: 11, ry: 14, fill: K, transform: 'rotate(-25 116 102)' }); }
+  if (A.mask) el(g, 'path', { d: 'M62 98 Q100 86 138 98 Q134 114 116 112 Q100 104 84 112 Q66 114 62 98 Z', fill: K });
+  if (A.face !== 'owl' && A.face !== 'bird') el(g, 'ellipse', { cx: 100, cy: 124, rx: 22, ry: 15, fill: A.muzzle });
+  if (A.face === 'bird') el(g, 'ellipse', { cx: 100, cy: 128, rx: 20, ry: 12, fill: A.muzzle });
+  // eyes
+  const light = A.patches || A.mask;
+  const eyeC = light ? '#f3efe6' : K;
+  if (L.eyes === 'sunglasses') { el(g, 'rect', { x: 72, y: 94, width: 24, height: 14, rx: 5, fill: K }); el(g, 'rect', { x: 104, y: 94, width: 24, height: 14, rx: 5, fill: K }); el(g, 'line', { x1: 96, y1: 99, x2: 104, y2: 99, stroke: K, 'stroke-width': 3 }); }
+  else if (L.eyes === 'sleepy') { el(g, 'path', { d: 'M77 102 Q84 107 91 102', fill: 'none', stroke: eyeC, 'stroke-width': 3, 'stroke-linecap': 'round' }); el(g, 'path', { d: 'M109 102 Q116 107 123 102', fill: 'none', stroke: eyeC, 'stroke-width': 3, 'stroke-linecap': 'round' }); }
+  else { const r = A.face === 'owl' ? 6 : 4.5; el(g, 'circle', { cx: 84, cy: 101, r, fill: eyeC }); el(g, 'circle', { cx: 116, cy: 101, r, fill: eyeC }); el(g, 'circle', { cx: 85.5, cy: 99.5, r: 1.4, fill: light ? K : '#fff' }); el(g, 'circle', { cx: 117.5, cy: 99.5, r: 1.4, fill: light ? K : '#fff' });
+    if (L.eyes === 'glasses') { el(g, 'circle', { cx: 84, cy: 101, r: 11, fill: 'none', stroke: K, 'stroke-width': 2.5 }); el(g, 'circle', { cx: 116, cy: 101, r: 11, fill: 'none', stroke: K, 'stroke-width': 2.5 }); el(g, 'line', { x1: 95, y1: 101, x2: 105, y2: 101, stroke: K, 'stroke-width': 2.5 }); } }
+  // nose, beak, mouth
+  if (A.face === 'owl') el(g, 'path', { d: 'M94 112 L106 112 L100 124 Z', fill: '#ffb02e' });
+  else if (A.face === 'bird') el(g, 'path', { d: 'M90 116 L110 116 L100 130 Z', fill: '#ffb02e' });
+  else {
+    el(g, 'ellipse', { cx: 100, cy: 117, rx: 6, ry: 4.5, fill: A.nose || K });
+    el(g, 'path', { d: 'M100 121 L100 126 M92 128 Q100 133 108 128', fill: 'none', stroke: K, 'stroke-width': 2.5, 'stroke-linecap': 'round' });
+    if (A.teeth) el(g, 'rect', { x: 96, y: 129, width: 8, height: 7, rx: 1.5, fill: '#fff', stroke: K, 'stroke-width': 1.2 });
+    if (A.tongue) el(g, 'path', { d: 'M96 130 Q100 140 104 130 Z', fill: '#e07a90' });
+    if (A.whiskers) [[-1, 120], [-1, 126], [1, 120], [1, 126]].forEach(([d, y]) => el(g, 'line', { x1: 100 + d * 18, y1: y, x2: 100 + d * 36, y2: y - 2, stroke: K, 'stroke-width': 1.5, opacity: .6 }));
+  }
   // headphones on everyone
-  el(g, 'path', { d: 'M60 106 Q60 52 100 52 Q140 52 140 106', fill: 'none', stroke: '#14151c', 'stroke-width': 7, 'stroke-linecap': 'round' });
-  el(g, 'rect', { x: 52, y: 96, width: 16, height: 28, rx: 7, fill: '#ffb02e', stroke: '#14151c', 'stroke-width': 3 });
-  el(g, 'rect', { x: 132, y: 96, width: 16, height: 28, rx: 7, fill: '#ffb02e', stroke: '#14151c', 'stroke-width': 3 });
-  // props float around
-  const spots = [[34, 46], [166, 46], [166, 160]];
+  el(g, 'path', { d: 'M58 108 Q58 58 100 58 Q142 58 142 108', fill: 'none', stroke: K, 'stroke-width': 7, 'stroke-linecap': 'round' });
+  el(g, 'rect', { x: 50, y: 96, width: 16, height: 28, rx: 7, fill: '#ffb02e', stroke: K, 'stroke-width': 3 });
+  el(g, 'rect', { x: 134, y: 96, width: 16, height: 28, rx: 7, fill: '#ffb02e', stroke: K, 'stroke-width': 3 });
+  const spots = [[30, 46], [170, 46], [170, 162]];
   L.props.forEach((p, i) => prop(s, p, ...spots[i]));
   $(target).appendChild(s);
 }
@@ -345,6 +390,10 @@ function prop(s, p, x, y) {
     bolt: () => el(g, 'path', { d: 'M3 -13 L-7 2 L0 2 L-3 13 L8 -3 L1 -3 Z', fill: A }),
     star: () => el(g, 'path', { d: 'M0 -12 L3.5 -4 L12 -3.5 L5.5 2 L7.5 10.5 L0 6 L-7.5 10.5 L-5.5 2 L-12 -3.5 L-3.5 -4 Z', fill: A }),
     sparkle: () => el(g, 'path', { d: 'M0 -13 Q2 -2 13 0 Q2 2 0 13 Q-2 2 -13 0 Q-2 -2 0 -13 Z', fill: A }),
+    book: () => { el(g, 'path', { d: 'M-12 -8 L0 -5 L12 -8 L12 9 L0 12 L-12 9 Z', fill: W }); el(g, 'line', { x1: 0, y1: -5, x2: 0, y2: 12, stroke: A, 'stroke-width': 2 }); },
+    pencil: () => { el(g, 'path', { d: 'M-10 10 L-7 3 L6 -10 L10 -6 L-3 7 Z', fill: A }); el(g, 'path', { d: 'M-10 10 L-7 3 L-3 7 Z', fill: W }); },
+    gamepad: () => { el(g, 'rect', { x: -13, y: -7, width: 26, height: 14, rx: 7, fill: W }); el(g, 'path', { d: 'M-7 -3 L-7 3 M-10 0 L-4 0', stroke: '#0e1424', 'stroke-width': 2 }); el(g, 'circle', { cx: 6, cy: -1, r: 2, fill: A }); el(g, 'circle', { cx: 9, cy: 2, r: 2, fill: A }); },
+    film: () => { el(g, 'rect', { x: -11, y: -9, width: 22, height: 18, rx: 2, fill: W }); [-6, 0, 6].forEach(x => { el(g, 'rect', { x: x - 1.5, y: -7, width: 3, height: 3, fill: '#0e1424' }); el(g, 'rect', { x: x - 1.5, y: 4, width: 3, height: 3, fill: '#0e1424' }); }); },
     note: () => { el(g, 'ellipse', { cx: -3, cy: 6, rx: 5, ry: 4, fill: A }); el(g, 'path', { d: 'M2 6 L2 -10 L10 -7', fill: 'none', stroke: A, 'stroke-width': 2.5 }); },
   };
   (P[p] || P.note)();
@@ -352,9 +401,15 @@ function prop(s, p, x, y) {
 
 /* ---------- hero ---------- */
 $('h-name').textContent = `You are ${ch.name || 'someone'}.`;
+function fitName(id = 'h-name') { const h = $(id); h.style.fontSize = ''; let f = parseFloat(getComputedStyle(h).fontSize); const words = [...h.textContent.split(/\s+/)];
+  const probe = document.createElement('span'); probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font:inherit'; h.appendChild(probe);
+  const widest = () => Math.max(...words.map(w => { probe.textContent = w; return probe.getBoundingClientRect().width; }));
+  while (f > 18 && widest() > h.clientWidth) { f -= 1; h.style.fontSize = f + 'px'; } probe.remove(); }
+const fitAll = () => { fitName('h-name'); fitName('share-name'); };
 $('l-madeof').innerHTML = madeOf.map(t => `<li>${esc(t.name)}</li>`).join('');
 $('l-portrait').innerHTML = (ch.portrait || []).map(p => `<dt>${esc(p.k)}</dt><dd>${md(p.v)}</dd>`).join('');
-safe(() => figurine('fig-hero', `Illustration of ${ch.name || 'the character'}`, '#283252'));
+safe(() => figurine('fig-hero', `Illustration of ${ch.name || 'the character'} as a ${ANIMALS[ANIMAL].name} in headphones`, '#283252'));
+$('animal-cap').textContent = `Your animal: the ${ANIMALS[ANIMAL].name}` + (ANIMAL_WHY.length ? ` (${ANIMAL_WHY.slice(0, 3).join(', ').toLowerCase()})` : '');
 
 /* ---------- taste ---------- */
 safe(() => {
@@ -366,6 +421,12 @@ safe(() => {
   el(s, 'polygon', { points: dims.map((d, i) => pt(i, Math.max(d.score, 4) * .9).join(',')).join(' '), fill: 'rgba(255,176,46,.35)', stroke: 'var(--amber)', 'stroke-width': 2 });
   dims.forEach((d, i) => { const [x, y] = pt(i, 106); el(s, 'text', { x, y: y + 4, 'text-anchor': Math.abs(x) < 10 ? 'middle' : x > 0 ? 'start' : 'end', class: 'lbl', style: 'fill:var(--ink-2);font-size:11px' }, `${d.name} ${d.score}`); });
   $('c-radar').appendChild(s);
+});
+
+if (has(D.life)) safe(() => {
+  $('life-wrap').hidden = false;
+  const max = Math.max(...D.life.map(g => g[1]), 0.01);
+  $('l-life').innerHTML = D.life.slice(0, 7).map((g, i) => `<li><span>${esc(g[0])}</span><span class="bar" style="--c:${CAT[(i + 2) % 6]};width:${Math.max(4, g[1] / max * 100)}%" title="${esc((g[2] || []).join(', '))}"></span><span class="pc">${pc(g[1])}</span></li>`).join('');
 });
 
 /* ---------- reads ---------- */
@@ -402,11 +463,15 @@ const CH = {
   discovery_years: () => miniYears('new_share', 'Share of each year that went to new artists'),
   focus_years: () => miniYears('func', 'Focus audio hours by year', v => Math.round(v) + 'h'),
   hours_years: () => miniYears('hours', 'Hours by year', v => Math.round(v) + 'h'),
-  loop: () => { const n = Math.min(D.loop?.n || 0, 40); const s = svg(240, 22, `${D.loop?.n || 0} plays in a row`); for (let i = 0; i < n; i++) el(s, 'rect', { x: i * 6, y: 0, width: 4.5, height: 22, rx: 1.5, fill: 'var(--amber)' }); return s; },
+  plays_years: () => miniYears('plays', 'Plays by year', v => v >= 1000 ? (v / 1000).toFixed(1) + 'k' : String(v)),
+  loop: () => { const n = Math.min(D.loop?.n || 0, 40); const s = svg(240, 22, `${D.loop?.n || 0} plays`); for (let i = 0; i < n; i++) el(s, 'rect', { x: i * 6, y: 0, width: 4.5, height: 22, rx: 1.5, fill: 'var(--amber)' }); return s; },
   top10: () => split([['top 10 artists', D.top10, 'var(--amber)'], ['everyone else', 1 - D.top10, 'var(--dim)']], 'Share of time on top 10 artists'),
   picked: () => split([['picked', D.picked, 'var(--amber)'], ['autoplay and skips', 1 - D.picked, 'var(--dim)']], 'Songs picked by hand'),
   shuffle: () => split([['shuffle', D.shuffle, 'var(--amber)'], ['in order', 1 - D.shuffle, 'var(--dim)']], 'Shuffle share'),
   weekend: () => split([['weekdays', 1 - D.weekend, 'var(--dim)'], ['weekends', D.weekend, 'var(--amber)']], 'Weekend share'),
+  life: () => split(D.life.slice(0, 5).map((g, i) => [g[0], g[1], CAT[(i + 2) % 6]]), 'What you watch'),
+  quests: () => { const q = (D.quests || []).slice(0, 6), m = Math.max(...q.map(x => x[1]), 1); const s = svg(240, 18 * q.length + 4, 'How-to topics by videos watched'); q.forEach(([n, v], i) => { el(s, 'rect', { x: 92, y: i * 18 + 2, width: Math.max(2, 140 * v / m), height: 12, rx: 3, fill: 'var(--amber)' }); el(s, 'text', { x: 0, y: i * 18 + 12, class: 'lbl' }, n.length > 15 ? n.slice(0, 14) + '…' : n); }); return s; },
+  rabbit: () => { const n = Math.min(D.rabbit?.n || 0, 80); const s = svg(240, 30, `${D.rabbit?.n || 0} videos in one sitting`); for (let i = 0; i < n; i++) el(s, 'rect', { x: (i % 40) * 6, y: Math.floor(i / 40) * 15, width: 4.5, height: 12, rx: 1.5, fill: 'var(--amber)' }); return s; },
   countries: () => { const s = svg(240, 30, 'Countries listened from'); (D.countries || []).slice(0, 8).forEach((c, i) => { el(s, 'circle', { cx: 12 + i * 30, cy: 10, r: 8, fill: 'var(--amber)' }); el(s, 'text', { x: 12 + i * 30, y: 28, 'text-anchor': 'middle', class: 'lbl' }, c.slice(0, 3).toUpperCase()); }); return s; },
 };
 
@@ -428,6 +493,7 @@ $('l-spectrum').innerHTML = D.spectrum.map(x => `<li><span class="end">${esc(x.l
 
 /* ---------- day + clock ---------- */
 $('l-day').innerHTML = (S.day?.items || []).map(d => `<li><time>${esc(d.time)}</time><span>${md(d.what)}${d.song ? `<span class="song">♪ ${esc(d.song)}</span>` : ''}</span></li>`).join('');
+$('cap-clock').textContent = D.clock_caption || 'Your real 24-hour clock';
 safe(() => {
   const s = svg(220, 220, `24-hour clock of listening, busiest at ${D.peak_hour}:00`, '-110 -110 220 220'), m = Math.max(...D.clock, 1e-9);
   el(s, 'circle', { r: 44, fill: 'none', stroke: 'rgba(14,20,36,.25)' });
@@ -450,18 +516,28 @@ $('l-badges').innerHTML = [...earned, ...almost].map((t, i) => `<li class="badge
   <div class="track" role="meter" aria-label="${esc(t.name)} strength" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${t.score}"><i style="width:${t.score}%"></i></div><p>${esc(t.clue.charAt(0).toUpperCase() + t.clue.slice(1))}.</p>${chips(t.artists)}</li>`).join('');
 
 /* ---------- share card ---------- */
+// each person's card takes the color family of their lead trait (the first in made_of, else the top-scoring one)
+const CARDS = { amber: ['#ffb02e', '#0e1424'], lilac: ['#c9b8ff', '#0e1424'], aqua: ['#9fe3df', '#0e1424'], sage: ['#a8d5a2', '#0e1424'], rust: ['#9a3f1c', '#f3efe6'] };
+const CARD_OF = {
+  amber: ['party_starter', 'class_clown', 'weekend_person', 'music_first', 'everyday', 'early_bird', 'go_with_the_flow'],
+  lilac: ['night_owl', 'romantic', 'heart_on_sleeve', 'crush', 'night_comfort', 'calm', 'story_lover'],
+  aqua: ['explorer', 'experimenter', 'globetrotter', 'asks_questions', 'lifelong_learner', 'well_informed', 'shape_shifter'],
+  sage: ['loyalist', 'creature_of_habit', 'comfort_seeker', 'seasonal_soul', 'down_to_earth', 'self_improver', 'homebody', 'patient'],
+  rust: ['free_thinker', 'restless', 'all_in', 'rabbit_holer', 'marathoner', 'gamer', 'gadget_head', 'maker', 'decisive', 'deep_worker'],
+};
+const lead = madeOf[0]?.key || D.traits[0]?.key;
+const cardName = CARDS[ch.look?.card] ? ch.look.card : Object.keys(CARD_OF).find(c => CARD_OF[c].includes(lead)) || 'amber';
+$('share').style.setProperty('--card-bg', CARDS[cardName][0]); $('share').style.setProperty('--card-ink', CARDS[cardName][1]);
 $('share-name').textContent = ch.name || '';
+fitAll(); addEventListener('resize', fitAll); document.fonts?.ready.then(fitAll);
 $('share-traits').textContent = madeOf.slice(0, 3).map(t => t.name).join(' · ');
 $('share-line').innerHTML = md(S.share?.line || '');
 $('share').setAttribute('aria-label', `Share card: ${ch.name || ''}. ${S.share?.line || ''}`);
-safe(() => figurine('fig-share', `Illustration of ${ch.name || 'the character'}`, '#0e1424'));
+safe(() => figurine('fig-share', `Illustration of ${ch.name || 'the character'} as a ${ANIMALS[ANIMAL].name}`, '#0e1424'));
 
 /* ---------- method ---------- */
 $('l-method').innerHTML = [
-  'This is for fun, not science. The guesses about life are playful readings of your listening, loosely inspired by music-psychology research that links taste to personality (Rentfrow and Gosling\'s five taste directions). The numbers behind each clue are real.',
-  `Genres were tagged by hand for ${D.tagged} of your top artists, covering ${pc(D.coverage)} of their hours. Focus and sleep audio is left out of taste.`,
-  'Each trait is scored 0–100 from fixed thresholds, so the same history always gets the same traits and two people\'s pages can be compared. 60 or more earns a badge.',
-  `Source: a Spotify ${D.extended ? '"Extended streaming history"' : '"Account data" (last 12 months only)'} export. Private-session plays are never listed.`,
+  ...(D.method || []),
   ...(S.method_extra || []),
 ].map(t => `<li>${md(t)}</li>`).join('');
 </script>

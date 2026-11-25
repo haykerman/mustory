@@ -5,7 +5,7 @@ description: Use when someone wants a playful personality page from their Spotif
 
 # Spotify You
 
-Turns a Spotify personal-data export into a page about the person, not the music: an invented character with a drawn figurine, life guesses ("your friends probably think you're…", "at a party you're probably…"), five life reads, "this or that" picks, a day in the life, green and red flags, trait badges and a share card. Every guess shows a small hint of the music behind it. It is for fun, and the voice says "probably".
+Turns a Spotify personal-data export into a page about the person, not the music: an invented character drawn as an animal in headphones, life guesses ("your friends probably think you're…", "at a party you're probably…"), five life reads, "this or that" picks, a day in the life, green and red flags, trait badges and a share card. Every guess shows a small hint of the music behind it. It is for fun, and the voice says "probably".
 
 Scripts do every count, score every trait and draw every chart. You do what needs judgment: tag genres, write the character and the guesses. Every number you write must come from `facts.md` or `you_facts.md`.
 

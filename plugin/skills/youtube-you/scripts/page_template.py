@@ -1,0 +1,546 @@
+"""The "you" page template: HTML with __TITLE__, __DATA__ and __STORY__ placeholders that render.py fills.
+
+Kept as a Python string so the plugin ships only text files the plugin directory accepts.
+"""
+TEMPLATE = r'''<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>__TITLE__</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
+<style>
+/* Same world as the story pages: night navy, amber for data, lilac and aqua flood bands. Life first, music as the evidence. */
+:root {
+  color-scheme: dark;
+  --ground: #0e1424; --ground-2: #172038; --ink: #f3efe6; --ink-2: #c3c8d8; --ink-3: #8a92ab; --rule: #283252;
+  --amber: #ffb02e; --lilac: #c9b8ff; --aqua: #9fe3df; --dark: #0e1424; --dim: #3b4566;
+  --m1: #5f86f5; --m2: #d14b6e; --m3: #b58a17; --m4: #239e74; --m5: #9a6fe0; --m6: #c2602f; /* validated on #0e1424 */
+  --display: "Syne", "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+a:focus-visible, button:focus-visible { outline: 3px solid var(--lilac); outline-offset: 2px; border-radius: 4px; }
+.band { padding-block: clamp(56px, 9vw, 104px); }
+.in { max-width: 1080px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: grid; gap: 28px; }
+.alt { background: var(--ground-2); }
+.flood { color: var(--dark); } .amber { background: var(--amber); } .lilac { background: var(--lilac); } .aqua { background: var(--aqua); }
+.hero { margin-top: calc(-1 * env(safe-area-inset-top, 0px)); padding-top: calc(env(safe-area-inset-top, 0px) + clamp(56px, 9vw, 104px)); }
+.eyebrow { font: 12px var(--mono); letter-spacing: .14em; text-transform: uppercase; color: var(--ink-3); margin: 0; }
+.flood .eyebrow { color: color-mix(in srgb, var(--dark) 70%, transparent); }
+h1, h2, h3 { font-family: var(--display); margin: 0; letter-spacing: -0.02em; text-wrap: balance; }
+h1 { font-size: clamp(40px, 6.6vw, 84px); line-height: .94; font-weight: 800; overflow-wrap: break-word; hyphens: auto; }
+h2 { font-size: clamp(32px, 5.4vw, 64px); line-height: .98; font-weight: 800; }
+h3 { font-size: 20px; font-weight: 700; letter-spacing: -0.01em; }
+p { margin: 0; max-width: 65ch; }
+.lede { font-size: clamp(17px, 2vw, 20px); color: var(--ink-2); }
+.flood .lede { color: var(--dark); }
+.muted { color: var(--ink-3); } .flood .muted { color: color-mix(in srgb, var(--dark) 65%, transparent); }
+.mono { font-family: var(--mono); font-size: 12px; }
+.two { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; align-items: center; }
+.two > * { min-width: 0; }
+.stack { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; align-content: start; }
+.made-of { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.made-of li { font: 12px var(--mono); letter-spacing: .06em; text-transform: uppercase; padding: 5px 10px; border-radius: 999px; background: color-mix(in srgb, var(--dark) 12%, transparent); }
+.figure-card { background: var(--dark); color: var(--ink); border-radius: 22px; padding: 22px; display: grid; gap: 16px; }
+.figure-card .fig { display: grid; place-items: center; }
+.figure-card .fig svg { width: min(240px, 70%); height: auto; }
+.portrait { margin: 0; display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 14px; font-size: 14px; }
+.portrait dt { font: 11px var(--mono); text-transform: uppercase; letter-spacing: .08em; color: var(--ink-3); padding-top: 3px; }
+.portrait dd { margin: 0; }
+.genres { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
+.genres li { display: grid; grid-template-columns: 11em minmax(0, 1fr) 3em; gap: 10px; align-items: center; font-size: 14px; }
+.genres .bar { height: 10px; border-radius: 99px; background: var(--c); }
+.genres .pc { font-family: var(--mono); font-size: 12px; text-align: right; color: var(--ink-2); }
+.radar svg { width: 100%; max-width: 520px; height: auto; display: block; margin: 0 auto; }
+.reads { list-style: none; padding: 0; margin: 0; display: grid; gap: 28px; }
+.reads > li { display: grid; gap: 7px; }
+.reads .top { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+.reads .lvl { font: 12px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--amber); white-space: nowrap; }
+.track { height: 10px; border-radius: 99px; background: var(--dim); position: relative; overflow: hidden; }
+.track i { position: absolute; inset: 0 auto 0 0; border-radius: 99px; background: var(--amber); }
+.reads p { font-size: 15px; color: var(--ink-2); }
+.why { font: 12px var(--mono); color: var(--ink-3); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; list-style: none; padding: 0; margin: 0; }
+.chips li { font: 11px var(--mono); padding: 3px 9px; border-radius: 999px; background: color-mix(in srgb, var(--ink) 9%, transparent); color: var(--ink-2); }
+.chips li::before { content: "♪ "; color: var(--amber); }
+.guesses { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.guess { background: var(--dark); color: var(--ink); border-radius: 20px; padding: 24px; display: grid; gap: 14px; align-content: start; min-width: 0; }
+.guess .q { font: 12px var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--lilac); }
+.guess blockquote { margin: 0; font-family: var(--display); font-weight: 700; font-size: clamp(21px, 2.5vw, 27px); line-height: 1.12; }
+.guess .because { border-top: 1px solid var(--rule); padding-top: 12px; display: grid; gap: 10px; font-size: 13px; color: var(--ink-2); }
+.guess .because b { color: var(--amber); font-weight: 600; }
+.guess svg { display: block; width: 100%; height: auto; }
+.lbl { fill: var(--ink-3); font-family: var(--mono); font-size: 10px; }
+.votes { display: flex; gap: 8px; }
+.votes button { font: 12px var(--mono); background: transparent; color: var(--ink-2); border: 1px solid var(--rule); border-radius: 999px; padding: 6px 13px; cursor: pointer; }
+.votes button[aria-pressed="true"] { background: var(--lilac); color: var(--dark); border-color: var(--lilac); }
+.spectrum { list-style: none; padding: 0; margin: 0; display: grid; gap: 24px; }
+.spectrum li { display: grid; grid-template-columns: 10em minmax(0, 1fr) 10em; gap: 6px 14px; align-items: center; }
+.spectrum .r { text-align: right; }
+.spectrum .bar { position: relative; height: 10px; border-radius: 99px; background: linear-gradient(90deg, var(--m1), var(--dim) 50%, var(--m2)); }
+.spectrum .dot { position: absolute; top: 50%; width: 22px; height: 22px; border-radius: 50%; background: var(--amber); border: 3px solid var(--ground); transform: translate(-50%, -50%); }
+.spectrum .cap { grid-column: 2; font: 12px var(--mono); color: var(--ink-3); }
+.spectrum .end { font-family: var(--display); font-weight: 700; font-size: 15px; }
+.day { list-style: none; padding: 0; margin: 0; display: grid; }
+.day li { display: grid; grid-template-columns: 5.5em minmax(0, 1fr); gap: 14px; padding: 12px 0; border-top: 1px solid color-mix(in srgb, var(--dark) 25%, transparent); }
+.day time { font-family: var(--mono); font-size: 13px; }
+.day .song { display: block; font: 11px var(--mono); color: color-mix(in srgb, var(--dark) 65%, transparent); margin-top: 2px; }
+.clock svg { width: 100%; max-width: 340px; height: auto; display: block; margin: 0 auto; }
+.flags { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.flags section { border-radius: 18px; padding: 22px; display: grid; gap: 10px; align-content: start; }
+.flags ul { margin: 0; padding-left: 1.1em; display: grid; gap: 10px; }
+.flags small { display: block; font: 11px var(--mono); color: var(--ink-3); margin-top: 2px; }
+.green { background: color-mix(in srgb, var(--m4) 22%, var(--ground)); } .red { background: color-mix(in srgb, var(--m2) 22%, var(--ground)); }
+.badges { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 14px; }
+.badge { background: var(--ground-2); border-radius: 16px; padding: 18px; display: grid; gap: 10px; align-content: start; border-top: 4px solid var(--c); }
+.badge.almost { opacity: .66; border-top-style: dashed; }
+.badge .row { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.badge .track i { background: var(--c); }
+.badge p { font-size: 13px; color: var(--ink-2); }
+.share { width: min(340px, 100%); aspect-ratio: 9 / 16; margin: 0 auto; border-radius: 26px; background: var(--card-bg, var(--amber)); color: var(--card-ink, var(--dark)); padding: 26px; display: grid; grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr auto auto auto; gap: 12px; text-align: center; box-shadow: 0 20px 60px rgb(0 0 0 / .4); box-sizing: border-box; }
+.share .fig { display: grid; place-items: center; }
+.share .fig svg { width: 72%; height: auto; }
+.share h3 { font-size: 30px; line-height: .95; font-weight: 800; }
+.share .line { font-family: var(--display); font-weight: 700; font-size: 17px; line-height: 1.2; }
+footer { font-size: 13px; color: var(--ink-3); }
+footer ul { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 75ch; }
+@media (max-width: 820px) {
+  .two, .flags, .guesses { grid-template-columns: minmax(0, 1fr); }
+  .genres li { grid-template-columns: 8.5em minmax(0, 1fr) 3em; }
+  .spectrum li { grid-template-columns: 1fr 1fr; }
+  .spectrum .bar { grid-column: 1 / -1; grid-row: 2; }
+  .spectrum .cap { grid-column: 1 / -1; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .hero h1 { animation: rise .7s cubic-bezier(.2,.8,.2,1) both; }
+  @keyframes rise { from { transform: translateY(18px); } to { transform: none; } }
+}
+</style>
+</head>
+<body>
+<main>
+<header class="band flood amber hero">
+  <div class="in two">
+    <div class="stack">
+      <p class="eyebrow" data-s="eyebrow"></p>
+      <h1 id="h-name"></h1>
+      <p class="lede" data-s="character.lede"></p>
+      <div class="stack" style="gap:8px">
+        <p class="eyebrow">Made of</p>
+        <ul class="made-of" id="l-madeof" aria-label="Traits this character is made of"></ul>
+      </div>
+    </div>
+    <aside class="figure-card" aria-labelledby="h-portrait">
+      <div class="fig" id="fig-hero"></div>
+      <p class="mono muted" id="animal-cap" style="text-align:center;margin:-6px auto 0"></p>
+      <h3 id="h-portrait">If you were a person in a novel</h3>
+      <dl class="portrait" id="l-portrait"></dl>
+    </aside>
+  </div>
+</header>
+
+<section class="band" aria-labelledby="h-taste">
+  <div class="in two">
+    <div class="stack">
+      <p class="eyebrow">The bridge</p>
+      <h2 id="h-taste" data-s="taste.h"></h2>
+      <p class="lede" data-s="taste.lede"></p>
+      <ul class="genres" id="l-genres" aria-label="Share of music by genre"></ul>
+      <div class="stack" id="life-wrap" hidden style="gap:12px"><h3>What else fills your screen</h3><ul class="genres" id="l-life" aria-label="Share of plays by part of life"></ul></div>
+    </div>
+    <figure class="radar" style="margin:0;display:grid;gap:8px">
+      <div id="c-radar"></div>
+      <figcaption class="mono muted" style="text-align:center">Five taste directions, 0–100</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band alt" aria-labelledby="h-reads">
+  <div class="in">
+    <p class="eyebrow">What that says about you</p>
+    <h2 id="h-reads" data-s="reads.h"></h2>
+    <p class="lede" data-s="reads.lede"></p>
+    <ul class="reads" id="l-reads"></ul>
+  </div>
+</section>
+
+<section class="band flood lilac" aria-labelledby="h-guess">
+  <div class="in">
+    <p class="eyebrow">Guesses</p>
+    <h2 id="h-guess" data-s="guesses.h"></h2>
+    <p class="lede" data-s="guesses.lede"></p>
+    <ul class="guesses" id="l-guesses"></ul>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="h-spec">
+  <div class="in">
+    <p class="eyebrow">This or that</p>
+    <h2 id="h-spec" data-s="spectrum.h"></h2>
+    <ul class="spectrum" id="l-spectrum"></ul>
+  </div>
+</section>
+
+<section class="band flood aqua" aria-labelledby="h-day" data-need-s="day.items">
+  <div class="in two">
+    <div class="stack">
+      <p class="eyebrow">A day in the life</p>
+      <h2 id="h-day" data-s="day.h"></h2>
+      <ol class="day" id="l-day"></ol>
+    </div>
+    <figure class="clock" style="margin:0;display:grid;gap:8px">
+      <div id="c-clock"></div>
+      <figcaption class="mono muted" style="text-align:center" id="cap-clock">Your real 24-hour clock</figcaption>
+    </figure>
+  </div>
+</section>
+
+<section class="band alt" aria-labelledby="h-flags" data-need-s="flags.green">
+  <div class="in">
+    <p class="eyebrow">As a friend</p>
+    <h2 id="h-flags" data-s="flags.h"></h2>
+    <div class="flags">
+      <section class="green" aria-labelledby="h-green"><h3 id="h-green">Green flags</h3><ul id="l-green"></ul></section>
+      <section class="red" aria-labelledby="h-red"><h3 id="h-red">Red flags</h3><ul id="l-red"></ul></section>
+    </div>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="h-traits">
+  <div class="in">
+    <p class="eyebrow">All your traits</p>
+    <h2 id="h-traits"></h2>
+    <p class="lede" id="p-traits"></p>
+    <ul class="badges" id="l-badges"></ul>
+  </div>
+</section>
+
+<section class="band alt" aria-labelledby="h-share">
+  <div class="in" style="justify-items:center;text-align:center">
+    <p class="eyebrow">Share card</p>
+    <h2 id="h-share" data-s="share.h"></h2>
+    <div class="share" role="img" id="share">
+      <span class="mono">mustory · probably me</span>
+      <div class="fig" id="fig-share"></div>
+      <h3 id="share-name"></h3>
+      <p id="share-traits" style="font-size:14px;margin:0 auto"></p>
+      <p class="line" id="share-line" style="margin:0 auto"></p>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer class="band" aria-labelledby="h-method">
+  <div class="in" style="gap:14px">
+    <h2 id="h-method" style="font-size:24px">How this was made</h2>
+    <ul id="l-method"></ul>
+  </div>
+</footer>
+
+<script type="application/json" id="data">__DATA__</script>
+<script type="application/json" id="story">__STORY__</script>
+<script>
+const D = JSON.parse(document.getElementById('data').textContent);
+const S = JSON.parse(document.getElementById('story').textContent);
+const NS = 'http://www.w3.org/2000/svg';
+const CAT = ['var(--m1)', 'var(--m2)', 'var(--m3)', 'var(--m4)', 'var(--m5)', 'var(--m6)'];
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const md = s => esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>');
+const get = (o, path) => path.split('.').reduce((a, k) => (a == null ? a : a[k]), o);
+const has = v => Array.isArray(v) ? v.length > 0 : v && typeof v === 'object' ? Object.keys(v).length > 0 : !!v;
+const pc = v => Math.round(v * 100) + '%';
+function svg(w, h, label, vb) { const s = document.createElementNS(NS, 'svg'); s.setAttribute('viewBox', vb || `0 0 ${w} ${h}`); s.setAttribute('role', 'img'); s.setAttribute('aria-label', label); return s; }
+function el(p, tag, attrs, text) { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; p.appendChild(e); return e; }
+function safe(fn) { try { fn(); } catch (e) { console.error(e); } }
+const chips = list => (list || []).length ? `<ul class="chips" aria-label="Music behind this">${list.map(x => `<li>${esc(x)}</li>`).join('')}</ul>` : '';
+
+document.querySelectorAll('[data-s]').forEach(n => { const v = get(S, n.dataset.s); n.innerHTML = md(v); if (!v) n.hidden = true; });
+document.querySelectorAll('[data-need-s]').forEach(n => { if (!has(get(S, n.dataset.needS))) n.hidden = true; });
+document.title = S.title || 'Who your music says you are';
+
+const TR = Object.fromEntries(D.traits.map(t => [t.key, t]));
+const earned = D.traits.filter(t => t.score >= 60);
+const almost = D.traits.filter(t => t.score >= 35 && t.score < 60).slice(0, 3);
+const ch = S.character || {};
+const madeOf = (ch.made_of || earned.slice(0, 5).map(t => t.key)).map(k => TR[k]).filter(Boolean);
+
+/* ---------- the figurine: an animal picked from the traits, styled by character.look ---------- */
+const OUTC = { navy: '#283252', amber: '#ffb02e', lilac: '#c9b8ff', aqua: '#9fe3df', blue: '#5f86f5', rose: '#d14b6e', ochre: '#b58a17', green: '#239e74', violet: '#9a6fe0', rust: '#c2602f', black: '#14151c' };
+const ANIMAL_OF = {
+  night_owl: 'owl', well_informed: 'owl', explorer: 'fox', experimenter: 'fox', asks_questions: 'fox', free_thinker: 'wolf', decisive: 'wolf',
+  loyalist: 'dog', creature_of_habit: 'dog', down_to_earth: 'dog', go_with_the_flow: 'cat', shape_shifter: 'cat', restless: 'cat',
+  comfort_seeker: 'bear', marathoner: 'bear', rabbit_holer: 'rabbit', party_starter: 'otter', class_clown: 'otter', weekend_person: 'otter',
+  romantic: 'deer', heart_on_sleeve: 'deer', crush: 'deer', seasonal_soul: 'squirrel', all_in: 'squirrel', deep_worker: 'panda', calm: 'panda',
+  patient: 'panda', self_improver: 'panda', gamer: 'raccoon', gadget_head: 'raccoon', story_lover: 'raccoon', maker: 'beaver', lifelong_learner: 'beaver',
+  globetrotter: 'bird', early_bird: 'bird', music_first: 'bird',
+};
+const ANIMALS = {
+  owl:      { name: 'owl',      fur: '#8a6a4a', muzzle: '#e9d9bf', ears: 'tufts', face: 'owl' },
+  fox:      { name: 'fox',      fur: '#e07a3a', muzzle: '#f3efe6', ears: 'pointy', inner: '#3a2418' },
+  wolf:     { name: 'wolf',     fur: '#8d93a3', muzzle: '#dfe2ea', ears: 'pointy', inner: '#4a4f5e' },
+  dog:      { name: 'dog',      fur: '#c89a5b', muzzle: '#f1dfc0', ears: 'floppy', inner: '#8a5f30', tongue: true },
+  cat:      { name: 'cat',      fur: '#a6a9b8', muzzle: '#e6e8ef', ears: 'pointy', inner: '#e8a0b4', whiskers: true },
+  bear:     { name: 'bear',     fur: '#7a5232', muzzle: '#c9a27a', ears: 'round', inner: '#5a3a22' },
+  rabbit:   { name: 'rabbit',   fur: '#e9e3da', muzzle: '#ffffff', ears: 'long', inner: '#f0a8b8', teeth: true, nose: '#e07a90' },
+  otter:    { name: 'otter',    fur: '#8a5a3c', muzzle: '#e9d2b4', ears: 'tiny', whiskers: true },
+  deer:     { name: 'deer',     fur: '#b9824f', muzzle: '#f1dfc0', ears: 'side', inner: '#e0b48a', antlers: true },
+  squirrel: { name: 'squirrel', fur: '#c0673a', muzzle: '#f1dfc0', ears: 'pointy', inner: '#8a4422', tail: true, teeth: true },
+  panda:    { name: 'panda',    fur: '#f3efe6', muzzle: '#ffffff', ears: 'round', inner: '#14151c', earColor: '#14151c', patches: true },
+  raccoon:  { name: 'raccoon',  fur: '#8d8f98', muzzle: '#eceef3', ears: 'pointy', inner: '#3a3c44', mask: true },
+  beaver:   { name: 'beaver',   fur: '#8a5a34', muzzle: '#c9a27a', ears: 'tiny', teeth: true },
+  bird:     { name: 'bluebird', fur: '#5f86f5', muzzle: '#f3efe6', ears: 'crest', face: 'bird' },
+};
+function pickAnimal() {
+  const want = ch.look?.animal;
+  if (want && ANIMALS[want]) return [want, []];
+  const score = {}, why = {};
+  D.traits.forEach(t => { const a = ANIMAL_OF[t.key]; if (!a || t.score < 35) return; score[a] = (score[a] || 0) + t.score - 35; (why[a] = why[a] || []).push(t.name); });
+  const best = Object.keys(score).sort((a, b) => score[b] - score[a])[0] || 'cat';
+  return [best, why[best] || []];
+}
+const [ANIMAL, ANIMAL_WHY] = pickAnimal();
+function lookFor() {
+  const L = Object.assign({}, ch.look || {});
+  const has_ = k => (TR[k]?.score || 0) >= 60;
+  L.outfit = L.outfit || (has_('free_thinker') ? 'jacket' : has_('deep_worker') || has_('gamer') ? 'hoodie' : has_('seasonal_soul') || has_('romantic') ? 'sweater' : 'tee');
+  L.outfit_color = L.outfit_color || (has_('night_owl') ? 'violet' : has_('party_starter') ? 'rose' : has_('free_thinker') ? 'black' : 'blue');
+  L.eyes = L.eyes || (has_('party_starter') ? 'sunglasses' : has_('night_owl') ? 'sleepy' : has_('experimenter') || has_('lifelong_learner') ? 'glasses' : 'dots');
+  const auto = [['night_owl', 'moon'], ['early_bird', 'coffee'], ['globetrotter', 'plane'], ['deep_worker', 'laptop'], ['comfort_seeker', 'repeat'],
+    ['explorer', 'compass'], ['seasonal_soul', 'sun'], ['romantic', 'heart'], ['heart_on_sleeve', 'heart'], ['restless', 'bolt'], ['loyalist', 'star'],
+    ['party_starter', 'sparkle'], ['class_clown', 'sparkle'], ['lifelong_learner', 'book'], ['maker', 'pencil'], ['gamer', 'gamepad'], ['story_lover', 'film']];
+  L.props = (L.props || [...new Set(auto.filter(([k]) => has_(k)).map(([, p]) => p))]).slice(0, 3);
+  return L;
+}
+function figurine(target, label, bg) {
+  const L = lookFor(), A = ANIMALS[ANIMAL], K = '#14151c';
+  const s = svg(200, 220, label, '0 0 200 220');
+  const out = OUTC[L.outfit_color] || OUTC.blue, fur = A.fur, earC = A.earColor || fur;
+  el(s, 'circle', { cx: 100, cy: 112, r: 92, fill: bg });
+  const g = el(s, 'g', {});
+  if (A.tail) el(g, 'path', { d: 'M138 200 Q182 190 176 140 Q170 100 146 110 Q166 130 150 160 Q140 180 138 200 Z', fill: fur });
+  // ears behind the head
+  const E = {
+    pointy: () => { el(g, 'path', { d: 'M62 90 L60 34 L98 70 Z', fill: earC }); el(g, 'path', { d: 'M138 90 L140 34 L102 70 Z', fill: earC }); el(g, 'path', { d: 'M67 78 L66 46 L88 68 Z', fill: A.inner }); el(g, 'path', { d: 'M133 78 L134 46 L112 68 Z', fill: A.inner }); },
+    round: () => { el(g, 'circle', { cx: 68, cy: 70, r: 15, fill: earC }); el(g, 'circle', { cx: 132, cy: 70, r: 15, fill: earC }); el(g, 'circle', { cx: 68, cy: 70, r: 7, fill: A.inner }); el(g, 'circle', { cx: 132, cy: 70, r: 7, fill: A.inner }); },
+    long: () => { el(g, 'ellipse', { cx: 82, cy: 40, rx: 11, ry: 34, fill: fur, transform: 'rotate(-10 82 40)' }); el(g, 'ellipse', { cx: 118, cy: 40, rx: 11, ry: 34, fill: fur, transform: 'rotate(10 118 40)' }); el(g, 'ellipse', { cx: 82, cy: 42, rx: 5, ry: 24, fill: A.inner, transform: 'rotate(-10 82 42)' }); el(g, 'ellipse', { cx: 118, cy: 42, rx: 5, ry: 24, fill: A.inner, transform: 'rotate(10 118 42)' }); },
+    floppy: () => { el(g, 'ellipse', { cx: 50, cy: 92, rx: 14, ry: 30, fill: A.inner, transform: 'rotate(38 50 92)' }); el(g, 'ellipse', { cx: 150, cy: 92, rx: 14, ry: 30, fill: A.inner, transform: 'rotate(-38 150 92)' }); },
+    side: () => { el(g, 'ellipse', { cx: 56, cy: 84, rx: 18, ry: 9, fill: fur, transform: 'rotate(-25 56 84)' }); el(g, 'ellipse', { cx: 144, cy: 84, rx: 18, ry: 9, fill: fur, transform: 'rotate(25 144 84)' }); el(g, 'ellipse', { cx: 57, cy: 84, rx: 10, ry: 4, fill: A.inner, transform: 'rotate(-25 57 84)' }); el(g, 'ellipse', { cx: 143, cy: 84, rx: 10, ry: 4, fill: A.inner, transform: 'rotate(25 143 84)' }); },
+    tiny: () => { el(g, 'circle', { cx: 72, cy: 76, r: 8, fill: fur }); el(g, 'circle', { cx: 128, cy: 76, r: 8, fill: fur }); },
+    tufts: () => { el(g, 'path', { d: 'M66 84 L62 52 L86 72 Z', fill: fur }); el(g, 'path', { d: 'M134 84 L138 52 L114 72 Z', fill: fur }); },
+    crest: () => { el(g, 'path', { d: 'M96 70 Q86 40 100 34 Q98 52 108 46 Q104 60 106 70 Z', fill: fur }); },
+  };
+  (E[A.ears] || E.round)();
+  if (A.antlers) { el(g, 'path', { d: 'M76 72 L66 40 M70 52 L56 46 M68 46 L72 30', fill: 'none', stroke: '#e3c172', 'stroke-width': 5, 'stroke-linecap': 'round' }); el(g, 'path', { d: 'M124 72 L134 40 M130 52 L144 46 M132 46 L128 30', fill: 'none', stroke: '#e3c172', 'stroke-width': 5, 'stroke-linecap': 'round' }); }
+  // body in an outfit
+  el(g, 'path', { d: 'M44 214 Q46 158 100 150 Q154 158 156 214 Z', fill: out });
+  if (L.outfit === 'jacket') { el(g, 'path', { d: 'M100 152 L84 214 L78 214 L76 164 Z', fill: K }); el(g, 'path', { d: 'M100 152 L116 214 L122 214 L124 164 Z', fill: K }); el(g, 'path', { d: 'M88 156 L100 180 L112 156 Z', fill: A.muzzle }); }
+  if (L.outfit === 'hoodie') { el(g, 'path', { d: 'M70 158 Q100 184 130 158', fill: 'none', stroke: 'rgba(0,0,0,.25)', 'stroke-width': 6, 'stroke-linecap': 'round' }); el(g, 'line', { x1: 92, y1: 170, x2: 92, y2: 190, stroke: '#f3efe6', 'stroke-width': 2 }); el(g, 'line', { x1: 108, y1: 170, x2: 108, y2: 190, stroke: '#f3efe6', 'stroke-width': 2 }); }
+  if (L.outfit === 'sweater') { for (let y = 184; y < 212; y += 12) el(g, 'path', { d: `M${56 - (y - 184) / 4} ${y} Q100 ${y - 6} ${144 + (y - 184) / 4} ${y}`, fill: 'none', stroke: 'rgba(255,255,255,.18)', 'stroke-width': 4 }); el(g, 'path', { d: 'M78 156 Q100 168 122 156', fill: 'none', stroke: 'rgba(0,0,0,.25)', 'stroke-width': 6 }); }
+  if (L.outfit === 'tee') el(g, 'path', { d: 'M82 154 Q100 168 118 154', fill: A.muzzle });
+  // head
+  el(g, 'ellipse', { cx: 100, cy: 106, rx: 40, ry: 38, fill: fur });
+  if (A.face === 'owl') { el(g, 'circle', { cx: 84, cy: 100, r: 15, fill: A.muzzle }); el(g, 'circle', { cx: 116, cy: 100, r: 15, fill: A.muzzle }); }
+  if (A.patches) { el(g, 'ellipse', { cx: 84, cy: 102, rx: 11, ry: 14, fill: K, transform: 'rotate(25 84 102)' }); el(g, 'ellipse', { cx: 116, cy: 102, rx: 11, ry: 14, fill: K, transform: 'rotate(-25 116 102)' }); }
+  if (A.mask) el(g, 'path', { d: 'M62 98 Q100 86 138 98 Q134 114 116 112 Q100 104 84 112 Q66 114 62 98 Z', fill: K });
+  if (A.face !== 'owl' && A.face !== 'bird') el(g, 'ellipse', { cx: 100, cy: 124, rx: 22, ry: 15, fill: A.muzzle });
+  if (A.face === 'bird') el(g, 'ellipse', { cx: 100, cy: 128, rx: 20, ry: 12, fill: A.muzzle });
+  // eyes
+  const light = A.patches || A.mask;
+  const eyeC = light ? '#f3efe6' : K;
+  if (L.eyes === 'sunglasses') { el(g, 'rect', { x: 72, y: 94, width: 24, height: 14, rx: 5, fill: K }); el(g, 'rect', { x: 104, y: 94, width: 24, height: 14, rx: 5, fill: K }); el(g, 'line', { x1: 96, y1: 99, x2: 104, y2: 99, stroke: K, 'stroke-width': 3 }); }
+  else if (L.eyes === 'sleepy') { el(g, 'path', { d: 'M77 102 Q84 107 91 102', fill: 'none', stroke: eyeC, 'stroke-width': 3, 'stroke-linecap': 'round' }); el(g, 'path', { d: 'M109 102 Q116 107 123 102', fill: 'none', stroke: eyeC, 'stroke-width': 3, 'stroke-linecap': 'round' }); }
+  else { const r = A.face === 'owl' ? 6 : 4.5; el(g, 'circle', { cx: 84, cy: 101, r, fill: eyeC }); el(g, 'circle', { cx: 116, cy: 101, r, fill: eyeC }); el(g, 'circle', { cx: 85.5, cy: 99.5, r: 1.4, fill: light ? K : '#fff' }); el(g, 'circle', { cx: 117.5, cy: 99.5, r: 1.4, fill: light ? K : '#fff' });
+    if (L.eyes === 'glasses') { el(g, 'circle', { cx: 84, cy: 101, r: 11, fill: 'none', stroke: K, 'stroke-width': 2.5 }); el(g, 'circle', { cx: 116, cy: 101, r: 11, fill: 'none', stroke: K, 'stroke-width': 2.5 }); el(g, 'line', { x1: 95, y1: 101, x2: 105, y2: 101, stroke: K, 'stroke-width': 2.5 }); } }
+  // nose, beak, mouth
+  if (A.face === 'owl') el(g, 'path', { d: 'M94 112 L106 112 L100 124 Z', fill: '#ffb02e' });
+  else if (A.face === 'bird') el(g, 'path', { d: 'M90 116 L110 116 L100 130 Z', fill: '#ffb02e' });
+  else {
+    el(g, 'ellipse', { cx: 100, cy: 117, rx: 6, ry: 4.5, fill: A.nose || K });
+    el(g, 'path', { d: 'M100 121 L100 126 M92 128 Q100 133 108 128', fill: 'none', stroke: K, 'stroke-width': 2.5, 'stroke-linecap': 'round' });
+    if (A.teeth) el(g, 'rect', { x: 96, y: 129, width: 8, height: 7, rx: 1.5, fill: '#fff', stroke: K, 'stroke-width': 1.2 });
+    if (A.tongue) el(g, 'path', { d: 'M96 130 Q100 140 104 130 Z', fill: '#e07a90' });
+    if (A.whiskers) [[-1, 120], [-1, 126], [1, 120], [1, 126]].forEach(([d, y]) => el(g, 'line', { x1: 100 + d * 18, y1: y, x2: 100 + d * 36, y2: y - 2, stroke: K, 'stroke-width': 1.5, opacity: .6 }));
+  }
+  // headphones on everyone
+  el(g, 'path', { d: 'M58 108 Q58 58 100 58 Q142 58 142 108', fill: 'none', stroke: K, 'stroke-width': 7, 'stroke-linecap': 'round' });
+  el(g, 'rect', { x: 50, y: 96, width: 16, height: 28, rx: 7, fill: '#ffb02e', stroke: K, 'stroke-width': 3 });
+  el(g, 'rect', { x: 134, y: 96, width: 16, height: 28, rx: 7, fill: '#ffb02e', stroke: K, 'stroke-width': 3 });
+  const spots = [[30, 46], [170, 46], [170, 162]];
+  L.props.forEach((p, i) => prop(s, p, ...spots[i]));
+  $(target).appendChild(s);
+}
+function prop(s, p, x, y) {
+  const g = el(s, 'g', { transform: `translate(${x} ${y})` });
+  el(g, 'circle', { r: 19, fill: '#0e1424', stroke: '#f3efe6', 'stroke-width': 2 });
+  const W = '#f3efe6', A = '#ffb02e';
+  const P = {
+    moon: () => { el(g, 'path', { d: 'M4 -10 A11 11 0 1 0 6 9 A8 8 0 1 1 4 -10 Z', fill: A }); el(g, 'circle', { cx: 8, cy: -6, r: 1.6, fill: W }); },
+    coffee: () => { el(g, 'rect', { x: -9, y: -6, width: 14, height: 14, rx: 3, fill: W }); el(g, 'path', { d: 'M5 -3 Q11 -3 11 2 Q11 6 5 6', fill: 'none', stroke: W, 'stroke-width': 2.5 }); el(g, 'path', { d: 'M-5 -10 Q-3 -13 -5 -16 M0 -10 Q2 -13 0 -16', fill: 'none', stroke: A, 'stroke-width': 2, 'stroke-linecap': 'round' }); },
+    plane: () => el(g, 'path', { d: 'M-12 2 L12 -8 L4 10 L1 3 Z M1 3 L12 -8', fill: A, stroke: '#0e1424', 'stroke-width': 1.5, 'stroke-linejoin': 'round' }),
+    laptop: () => { el(g, 'rect', { x: -10, y: -9, width: 20, height: 13, rx: 2, fill: W }); el(g, 'rect', { x: -13, y: 5, width: 26, height: 4, rx: 2, fill: A }); },
+    repeat: () => { el(g, 'path', { d: 'M-9 2 A9 9 0 0 1 7 -6', fill: 'none', stroke: A, 'stroke-width': 3, 'stroke-linecap': 'round' }); el(g, 'path', { d: 'M9 -2 A9 9 0 0 1 -7 6', fill: 'none', stroke: A, 'stroke-width': 3, 'stroke-linecap': 'round' }); el(g, 'path', { d: 'M3 -10 L8 -6 L3 -2', fill: 'none', stroke: A, 'stroke-width': 2.5 }); el(g, 'path', { d: 'M-3 10 L-8 6 L-3 2', fill: 'none', stroke: A, 'stroke-width': 2.5 }); },
+    compass: () => { el(g, 'circle', { r: 11, fill: 'none', stroke: W, 'stroke-width': 2 }); el(g, 'path', { d: 'M0 -8 L3 0 L0 8 L-3 0 Z', fill: A }); },
+    sun: () => { el(g, 'circle', { r: 6, fill: A }); for (let k = 0; k < 8; k++) { const a = k * Math.PI / 4; el(g, 'line', { x1: 9 * Math.cos(a), y1: 9 * Math.sin(a), x2: 13 * Math.cos(a), y2: 13 * Math.sin(a), stroke: A, 'stroke-width': 2.5, 'stroke-linecap': 'round' }); } },
+    heart: () => el(g, 'path', { d: 'M0 10 C-14 0 -10 -12 0 -5 C10 -12 14 0 0 10 Z', fill: '#d14b6e' }),
+    bolt: () => el(g, 'path', { d: 'M3 -13 L-7 2 L0 2 L-3 13 L8 -3 L1 -3 Z', fill: A }),
+    star: () => el(g, 'path', { d: 'M0 -12 L3.5 -4 L12 -3.5 L5.5 2 L7.5 10.5 L0 6 L-7.5 10.5 L-5.5 2 L-12 -3.5 L-3.5 -4 Z', fill: A }),
+    sparkle: () => el(g, 'path', { d: 'M0 -13 Q2 -2 13 0 Q2 2 0 13 Q-2 2 -13 0 Q-2 -2 0 -13 Z', fill: A }),
+    book: () => { el(g, 'path', { d: 'M-12 -8 L0 -5 L12 -8 L12 9 L0 12 L-12 9 Z', fill: W }); el(g, 'line', { x1: 0, y1: -5, x2: 0, y2: 12, stroke: A, 'stroke-width': 2 }); },
+    pencil: () => { el(g, 'path', { d: 'M-10 10 L-7 3 L6 -10 L10 -6 L-3 7 Z', fill: A }); el(g, 'path', { d: 'M-10 10 L-7 3 L-3 7 Z', fill: W }); },
+    gamepad: () => { el(g, 'rect', { x: -13, y: -7, width: 26, height: 14, rx: 7, fill: W }); el(g, 'path', { d: 'M-7 -3 L-7 3 M-10 0 L-4 0', stroke: '#0e1424', 'stroke-width': 2 }); el(g, 'circle', { cx: 6, cy: -1, r: 2, fill: A }); el(g, 'circle', { cx: 9, cy: 2, r: 2, fill: A }); },
+    film: () => { el(g, 'rect', { x: -11, y: -9, width: 22, height: 18, rx: 2, fill: W }); [-6, 0, 6].forEach(x => { el(g, 'rect', { x: x - 1.5, y: -7, width: 3, height: 3, fill: '#0e1424' }); el(g, 'rect', { x: x - 1.5, y: 4, width: 3, height: 3, fill: '#0e1424' }); }); },
+    note: () => { el(g, 'ellipse', { cx: -3, cy: 6, rx: 5, ry: 4, fill: A }); el(g, 'path', { d: 'M2 6 L2 -10 L10 -7', fill: 'none', stroke: A, 'stroke-width': 2.5 }); },
+  };
+  (P[p] || P.note)();
+}
+
+/* ---------- hero ---------- */
+$('h-name').textContent = `You are ${ch.name || 'someone'}.`;
+function fitName(id = 'h-name') { const h = $(id); h.style.fontSize = ''; let f = parseFloat(getComputedStyle(h).fontSize); const words = [...h.textContent.split(/\s+/)];
+  const probe = document.createElement('span'); probe.style.cssText = 'position:absolute;visibility:hidden;white-space:nowrap;font:inherit'; h.appendChild(probe);
+  const widest = () => Math.max(...words.map(w => { probe.textContent = w; return probe.getBoundingClientRect().width; }));
+  while (f > 18 && widest() > h.clientWidth) { f -= 1; h.style.fontSize = f + 'px'; } probe.remove(); }
+const fitAll = () => { fitName('h-name'); fitName('share-name'); };
+$('l-madeof').innerHTML = madeOf.map(t => `<li>${esc(t.name)}</li>`).join('');
+$('l-portrait').innerHTML = (ch.portrait || []).map(p => `<dt>${esc(p.k)}</dt><dd>${md(p.v)}</dd>`).join('');
+safe(() => figurine('fig-hero', `Illustration of ${ch.name || 'the character'} as a ${ANIMALS[ANIMAL].name} in headphones`, '#283252'));
+$('animal-cap').textContent = `Your animal: the ${ANIMALS[ANIMAL].name}` + (ANIMAL_WHY.length ? ` (${ANIMAL_WHY.slice(0, 3).join(', ').toLowerCase()})` : '');
+
+/* ---------- taste ---------- */
+safe(() => {
+  const max = Math.max(...D.genres.map(g => g[1]), 0.01);
+  $('l-genres').innerHTML = D.genres.slice(0, 8).map((g, i) => `<li><span>${esc(g[0])}</span><span class="bar" style="--c:${CAT[i % 6]};width:${Math.max(4, g[1] / max * 100)}%" title="${esc(g[2].join(', '))}"></span><span class="pc">${pc(g[1])}</span></li>`).join('');
+  const dims = D.dims, s = svg(350, 244, 'Taste directions: ' + dims.map(d => `${d.name} ${d.score}`).join(', '), '-215 -122 430 244');
+  const pt = (i, r) => { const a = i / 5 * 2 * Math.PI - Math.PI / 2; return [r * Math.cos(a), r * Math.sin(a)]; };
+  [25, 50, 75, 100].forEach(r => el(s, 'polygon', { points: dims.map((_, i) => pt(i, r * .9).join(',')).join(' '), fill: 'none', stroke: 'var(--rule)' }));
+  el(s, 'polygon', { points: dims.map((d, i) => pt(i, Math.max(d.score, 4) * .9).join(',')).join(' '), fill: 'rgba(255,176,46,.35)', stroke: 'var(--amber)', 'stroke-width': 2 });
+  dims.forEach((d, i) => { const [x, y] = pt(i, 106); el(s, 'text', { x, y: y + 4, 'text-anchor': Math.abs(x) < 10 ? 'middle' : x > 0 ? 'start' : 'end', class: 'lbl', style: 'fill:var(--ink-2);font-size:11px' }, `${d.name} ${d.score}`); });
+  $('c-radar').appendChild(s);
+});
+
+if (has(D.life)) safe(() => {
+  $('life-wrap').hidden = false;
+  const max = Math.max(...D.life.map(g => g[1]), 0.01);
+  $('l-life').innerHTML = D.life.slice(0, 7).map((g, i) => `<li><span>${esc(g[0])}</span><span class="bar" style="--c:${CAT[(i + 2) % 6]};width:${Math.max(4, g[1] / max * 100)}%" title="${esc((g[2] || []).join(', '))}"></span><span class="pc">${pc(g[1])}</span></li>`).join('');
+});
+
+/* ---------- reads ---------- */
+$('l-reads').innerHTML = D.reads.map(r => {
+  const best = r.from.map(k => TR[k]).filter(Boolean).sort((a, b) => b.score - a.score)[0];
+  const art = [...new Set(r.from.flatMap(k => TR[k]?.artists || []))].slice(0, 3);
+  return `<li><div class="top"><h3>${esc(r.name)}</h3><span class="lvl">${esc(r.level)}</span></div>
+    <div class="track" role="meter" aria-label="${esc(r.name)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${r.score}"><i style="width:${r.score}%"></i></div>
+    <p>${md(S.reads?.items?.[r.key] || '')}</p><span class="why">Clue: ${esc(best?.clue || '')}</span>${chips(art)}</li>`;
+}).join('');
+
+/* ---------- guess charts ---------- */
+const Y = D.years, YK = Object.keys(Y);
+function miniYears(key, label, fmt = pc) {
+  const vals = YK.map(y => Y[y][key] ?? 0), max = Math.max(...vals, 1e-9), bw = 240 / YK.length;
+  const s = svg(240, 62, label);
+  vals.forEach((v, i) => { const h = 38 * v / max; el(s, 'rect', { x: i * bw + 3, y: 44 - h, width: bw - 6, height: Math.max(h, 1), rx: 3, fill: 'var(--amber)' }); el(s, 'text', { x: i * bw + bw / 2, y: 58, 'text-anchor': 'middle', class: 'lbl' }, "'" + YK[i].slice(2)); el(s, 'text', { x: i * bw + bw / 2, y: 40 - h, 'text-anchor': 'middle', class: 'lbl' }, fmt(v)); });
+  return s;
+}
+function split(parts, label) {
+  const s = svg(240, 40, label); let x = 0; const tot = parts.reduce((a, p) => a + p[1], 0) || 1;
+  parts.forEach(([n, v, c]) => { const w = 240 * v / tot; if (w < 1) return; el(s, 'rect', { x: x + 1, y: 0, width: Math.max(w - 2, 1), height: 20, rx: 4, fill: c }); if (w > 46) el(s, 'text', { x: x + 4, y: 34, class: 'lbl' }, `${n} ${pc(v / tot)}`); x += w; });
+  return s;
+}
+const CH = {
+  clock: () => { const s = svg(240, 56, 'Listening by hour of day'); const m = Math.max(...D.clock); D.clock.forEach((v, i) => { const h = 40 * v / m; el(s, 'rect', { x: i * 10, y: 42 - h, width: 8, height: Math.max(h, 1), rx: 1.5, fill: i === D.peak_hour ? 'var(--amber)' : 'var(--dim)' }); }); [0, 6, 12, 18].forEach(hh => el(s, 'text', { x: hh * 10, y: 54, class: 'lbl' }, hh + ':00')); return s; },
+  night: () => { const s = svg(240, 56, 'Listening by hour, late night highlighted'); const m = Math.max(...D.clock); D.clock.forEach((v, i) => { const h = 40 * v / m; el(s, 'rect', { x: i * 10, y: 42 - h, width: 8, height: Math.max(h, 1), rx: 1.5, fill: (i >= 21 || i < 3) ? 'var(--amber)' : 'var(--dim)' }); }); [0, 6, 12, 18].forEach(hh => el(s, 'text', { x: hh * 10, y: 54, class: 'lbl' }, hh + ':00')); return s; },
+  morning: () => { const s = svg(240, 56, 'Listening by hour, morning highlighted'); const m = Math.max(...D.clock); D.clock.forEach((v, i) => { const h = 40 * v / m; el(s, 'rect', { x: i * 10, y: 42 - h, width: 8, height: Math.max(h, 1), rx: 1.5, fill: (i >= 5 && i < 10) ? 'var(--amber)' : 'var(--dim)' }); }); [0, 6, 12, 18].forEach(hh => el(s, 'text', { x: hh * 10, y: 54, class: 'lbl' }, hh + ':00')); return s; },
+  taste: () => split(D.genres.slice(0, 5).map((g, i) => [g[0], g[1], CAT[i]]), 'Top genres'),
+  dims: () => split(D.dims.map((d, i) => [d.name, d.share, CAT[i]]), 'Taste directions'),
+  skip_years: () => miniYears('skip', 'Skip rate by year'),
+  shuffle_years: () => miniYears('shuffle', 'Shuffle by year'),
+  night_years: () => miniYears('night', 'After-midnight share by year'),
+  discovery_years: () => miniYears('new_share', 'Share of each year that went to new artists'),
+  focus_years: () => miniYears('func', 'Focus audio hours by year', v => Math.round(v) + 'h'),
+  hours_years: () => miniYears('hours', 'Hours by year', v => Math.round(v) + 'h'),
+  plays_years: () => miniYears('plays', 'Plays by year', v => v >= 1000 ? (v / 1000).toFixed(1) + 'k' : String(v)),
+  loop: () => { const n = Math.min(D.loop?.n || 0, 40); const s = svg(240, 22, `${D.loop?.n || 0} plays`); for (let i = 0; i < n; i++) el(s, 'rect', { x: i * 6, y: 0, width: 4.5, height: 22, rx: 1.5, fill: 'var(--amber)' }); return s; },
+  top10: () => split([['top 10 artists', D.top10, 'var(--amber)'], ['everyone else', 1 - D.top10, 'var(--dim)']], 'Share of time on top 10 artists'),
+  picked: () => split([['picked', D.picked, 'var(--amber)'], ['autoplay and skips', 1 - D.picked, 'var(--dim)']], 'Songs picked by hand'),
+  shuffle: () => split([['shuffle', D.shuffle, 'var(--amber)'], ['in order', 1 - D.shuffle, 'var(--dim)']], 'Shuffle share'),
+  weekend: () => split([['weekdays', 1 - D.weekend, 'var(--dim)'], ['weekends', D.weekend, 'var(--amber)']], 'Weekend share'),
+  life: () => split(D.life.slice(0, 5).map((g, i) => [g[0], g[1], CAT[(i + 2) % 6]]), 'What you watch'),
+  quests: () => { const q = (D.quests || []).slice(0, 6), m = Math.max(...q.map(x => x[1]), 1); const s = svg(240, 18 * q.length + 4, 'How-to topics by videos watched'); q.forEach(([n, v], i) => { el(s, 'rect', { x: 92, y: i * 18 + 2, width: Math.max(2, 140 * v / m), height: 12, rx: 3, fill: 'var(--amber)' }); el(s, 'text', { x: 0, y: i * 18 + 12, class: 'lbl' }, n.length > 15 ? n.slice(0, 14) + '…' : n); }); return s; },
+  rabbit: () => { const n = Math.min(D.rabbit?.n || 0, 80); const s = svg(240, 30, `${D.rabbit?.n || 0} videos in one sitting`); for (let i = 0; i < n; i++) el(s, 'rect', { x: (i % 40) * 6, y: Math.floor(i / 40) * 15, width: 4.5, height: 12, rx: 1.5, fill: 'var(--amber)' }); return s; },
+  countries: () => { const s = svg(240, 30, 'Countries listened from'); (D.countries || []).slice(0, 8).forEach((c, i) => { el(s, 'circle', { cx: 12 + i * 30, cy: 10, r: 8, fill: 'var(--amber)' }); el(s, 'text', { x: 12 + i * 30, y: 28, 'text-anchor': 'middle', class: 'lbl' }, c.slice(0, 3).toUpperCase()); }); return s; },
+};
+
+/* ---------- guesses ---------- */
+safe(() => {
+  const ul = $('l-guesses');
+  (S.guesses?.items || []).forEach((g, i) => {
+    const li = document.createElement('li'); li.className = 'guess';
+    li.innerHTML = `<span class="q">${md(g.q)}</span><blockquote>${md(g.a)}</blockquote><div class="because"><span>${md(g.because)}</span><div class="mc"></div>${chips(g.chips)}</div>
+      <div class="votes" role="group" aria-label="Is this true?"><button type="button" aria-pressed="false">True</button><button type="button" aria-pressed="false">Not me</button></div>`;
+    if (g.chart && CH[g.chart]) safe(() => li.querySelector('.mc').appendChild(CH[g.chart]()));
+    ul.appendChild(li);
+  });
+  ul.addEventListener('click', e => { const b = e.target.closest('button'); if (!b) return; b.parentElement.querySelectorAll('button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); });
+});
+
+/* ---------- spectrum ---------- */
+$('l-spectrum').innerHTML = D.spectrum.map(x => `<li><span class="end">${esc(x.l)}</span><div class="bar" role="meter" aria-label="${esc(x.l)} to ${esc(x.r)}" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${x.pos}"><span class="dot" style="left:${x.pos}%"></span></div><span class="end r">${esc(x.r)}</span><span class="cap">${esc(x.clue)}</span></li>`).join('');
+
+/* ---------- day + clock ---------- */
+$('l-day').innerHTML = (S.day?.items || []).map(d => `<li><time>${esc(d.time)}</time><span>${md(d.what)}${d.song ? `<span class="song">♪ ${esc(d.song)}</span>` : ''}</span></li>`).join('');
+$('cap-clock').textContent = D.clock_caption || 'Your real 24-hour clock';
+safe(() => {
+  const s = svg(220, 220, `24-hour clock of listening, busiest at ${D.peak_hour}:00`, '-110 -110 220 220'), m = Math.max(...D.clock, 1e-9);
+  el(s, 'circle', { r: 44, fill: 'none', stroke: 'rgba(14,20,36,.25)' });
+  D.clock.forEach((v, i) => { const a = i / 24 * 2 * Math.PI - Math.PI / 2, a2 = a + 2 * Math.PI / 24 * .8, r0 = 46, r1 = 46 + 56 * v / m;
+    const p = (r, t) => `${(r * Math.cos(t)).toFixed(1)} ${(r * Math.sin(t)).toFixed(1)}`;
+    el(s, 'path', { d: `M${p(r0, a)} L${p(r1, a)} A${r1} ${r1} 0 0 1 ${p(r1, a2)} L${p(r0, a2)} A${r0} ${r0} 0 0 0 ${p(r0, a)}Z`, fill: v / m > .6 ? '#0e1424' : 'rgba(14,20,36,.38)' }); });
+  [[0, '0'], [6, '6'], [12, '12'], [18, '18']].forEach(([i, t]) => { const a = i / 24 * 2 * Math.PI - Math.PI / 2; el(s, 'text', { x: (32 * Math.cos(a)).toFixed(1), y: (32 * Math.sin(a) + 4).toFixed(1), 'text-anchor': 'middle', 'font-family': 'var(--mono)', 'font-size': 10, fill: '#0e1424' }, t); });
+  $('c-clock').appendChild(s);
+});
+
+/* ---------- flags ---------- */
+const flag = f => `<li>${md(f.t)}${f.e ? `<small>♪ ${esc(f.e)}</small>` : ''}</li>`;
+$('l-green').innerHTML = (S.flags?.green || []).map(flag).join('');
+$('l-red').innerHTML = (S.flags?.red || []).map(flag).join('');
+
+/* ---------- badges ---------- */
+$('h-traits').textContent = `${earned.length} ${earned.length === 1 ? 'badge' : 'badges'}${almost.length ? `, ${almost.length} near ${almost.length === 1 ? 'miss' : 'misses'}` : ''}.`;
+$('p-traits').textContent = `Out of ${D.traits.length} traits, each earned by a pattern in your history. The bar shows how strongly; 60 earns the badge.`;
+$('l-badges').innerHTML = [...earned, ...almost].map((t, i) => `<li class="badge${t.score < 60 ? ' almost' : ''}" style="--c:${CAT[i % 6]}"><div class="row"><h3>${esc(t.name)}</h3><span class="mono">${t.score < 60 ? 'almost · ' : ''}${t.score}</span></div>
+  <div class="track" role="meter" aria-label="${esc(t.name)} strength" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${t.score}"><i style="width:${t.score}%"></i></div><p>${esc(t.clue.charAt(0).toUpperCase() + t.clue.slice(1))}.</p>${chips(t.artists)}</li>`).join('');
+
+/* ---------- share card ---------- */
+// each person's card takes the color family of their lead trait (the first in made_of, else the top-scoring one)
+const CARDS = { amber: ['#ffb02e', '#0e1424'], lilac: ['#c9b8ff', '#0e1424'], aqua: ['#9fe3df', '#0e1424'], sage: ['#a8d5a2', '#0e1424'], rust: ['#9a3f1c', '#f3efe6'] };
+const CARD_OF = {
+  amber: ['party_starter', 'class_clown', 'weekend_person', 'music_first', 'everyday', 'early_bird', 'go_with_the_flow'],
+  lilac: ['night_owl', 'romantic', 'heart_on_sleeve', 'crush', 'night_comfort', 'calm', 'story_lover'],
+  aqua: ['explorer', 'experimenter', 'globetrotter', 'asks_questions', 'lifelong_learner', 'well_informed', 'shape_shifter'],
+  sage: ['loyalist', 'creature_of_habit', 'comfort_seeker', 'seasonal_soul', 'down_to_earth', 'self_improver', 'homebody', 'patient'],
+  rust: ['free_thinker', 'restless', 'all_in', 'rabbit_holer', 'marathoner', 'gamer', 'gadget_head', 'maker', 'decisive', 'deep_worker'],
+};
+const lead = madeOf[0]?.key || D.traits[0]?.key;
+const cardName = CARDS[ch.look?.card] ? ch.look.card : Object.keys(CARD_OF).find(c => CARD_OF[c].includes(lead)) || 'amber';
+$('share').style.setProperty('--card-bg', CARDS[cardName][0]); $('share').style.setProperty('--card-ink', CARDS[cardName][1]);
+$('share-name').textContent = ch.name || '';
+fitAll(); addEventListener('resize', fitAll); document.fonts?.ready.then(fitAll);
+$('share-traits').textContent = madeOf.slice(0, 3).map(t => t.name).join(' · ');
+$('share-line').innerHTML = md(S.share?.line || '');
+$('share').setAttribute('aria-label', `Share card: ${ch.name || ''}. ${S.share?.line || ''}`);
+safe(() => figurine('fig-share', `Illustration of ${ch.name || 'the character'} as a ${ANIMALS[ANIMAL].name}`, '#0e1424'));
+
+/* ---------- method ---------- */
+$('l-method').innerHTML = [
+  ...(D.method || []),
+  ...(S.method_extra || []),
+].map(t => `<li>${md(t)}</li>`).join('');
+</script>
+</body>
+</html>
+'''

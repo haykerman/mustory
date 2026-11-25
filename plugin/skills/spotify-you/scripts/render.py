@@ -87,9 +87,10 @@ def main():
     missing = [k for k in REQUIRED if not get(story, k)] + [f'reads.items.{k}' for k in READS if not get(story, f'reads.items.{k}')]
     if missing:
         sys.exit('you.json is missing: ' + ', '.join(missing))
-    bad = [g.get('chart') for g in story['guesses']['items'] if g.get('chart') and g['chart'] not in CHARTS]
+    charts = set(data.get('charts') or CHARTS)
+    bad = [g.get('chart') for g in story['guesses']['items'] if g.get('chart') and g['chart'] not in charts]
     if bad:
-        sys.exit('guesses use unknown charts: ' + ', '.join(bad) + '\nUse one of: ' + ', '.join(sorted(CHARTS)))
+        sys.exit('guesses use charts this page can\'t draw: ' + ', '.join(bad) + '\nUse one of: ' + ', '.join(sorted(charts)))
     keys = {t['key'] for t in data['traits']}
     bad = [k for k in story['character'].get('made_of', []) if k not in keys]
     if bad:

@@ -18,7 +18,8 @@ mustory is a [Claude Code](https://claude.com/claude-code) plugin that turns you
 |---|---|---|
 | `youtube-story` | Google Takeout export of YouTube history | Eras, obsessions, forgotten favorites, seasons, night-owl hours, rabbit holes, rituals, odd watches, a personality read |
 | `spotify-story` | Spotify data export (Extended streaming history is best) | Lifetime hours, loops, the skip button, autopilot vs songs you picked, focus music, devices, travel, discovery, marathons |
-| `spotify-you` | Spotify data export | A page about you, not the music: an invented character with a drawn figurine, guesses about your life from your taste and habits, trait badges and a share card |
+| `spotify-you` | Spotify data export | A page about you, not the music: an invented character drawn as an animal in headphones, guesses about your life from your taste and habits, trait badges and a share card |
+| `youtube-you` | Google Takeout export of YouTube history | The same "you" page from what you watch: music taste plus the hobbies you taught yourself, the stories, news and comedy you watch, rabbit holes and late nights |
 | `youtube-vs-spotify` | Both of the above | Which app does what, when you use each, where artists are found first, artists that live on one app, songs you play everywhere |
 
 Scripts do every count and draw every chart. Claude does the parts that need judgment (labeling channels, tagging moods, writing the story), and a fact checker makes sure every number in the story comes from your data. Everything stays on your computer.
@@ -66,6 +67,7 @@ plugin/                           the plugin itself (only this folder is shipped
     youtube-story/                SKILL.md, scripts/ (incl. page_template.py), references/story.md
     spotify-story/                same shape
     spotify-you/                  same shape
+    youtube-you/                  same shape
     youtube-vs-spotify/           same shape
   README.md, LICENSE
 docs/ideas.md                     the question catalog the pages answer, plus ideas not built yet

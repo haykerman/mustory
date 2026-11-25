@@ -131,6 +131,9 @@ def main():
         F.append(f'- {yy}: {yt[yy]:,} plays. {mix}')
     F.append(f'- Busiest month: {peak[0]} with {peak[1]:,} plays. Busiest day: {days.most_common(1)[0][0]} with {days.most_common(1)[0][1]} plays.')
     D['year_totals'] = {yy: yt[yy] for yy in years}
+    tc = Counter(r['cat'] for r in live)
+    D['topics'] = tc.most_common()
+    F.append('\n## Topics (all time, playable videos)\n- ' + ', '.join(f'{c} {n:,} ({round(100 * n / max(1, len(live)))}%)' for c, n in tc.most_common(25)))
 
     # ---------- artists
     ap_ = defaultdict(list)

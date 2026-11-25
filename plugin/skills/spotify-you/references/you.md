@@ -42,13 +42,12 @@ Habits say as much as genres: loops (comfort seekers), skips (impatient, knows w
       { "k": "Group chat", "v": "…" }
     ],
     "look": {                                  // optional; draws the figurine. Omit any field to let the traits decide.
-      "hair": "short",          // short, long, curly, spiky, bun, buzz, none
-      "hair_color": "brown",    // black, brown, blonde, red, gray, pink, blue, green
-      "skin": "c",              // a (lightest) … f (deepest), or blue, green, lilac for a non-human look
+      "card": "lilac",          // share card color: amber, lilac, aqua, sage, rust. Default: from the lead trait (first in made_of): social traits amber, night and feeling traits lilac, curious traits aqua, loyal traits sage, intense traits rust
+      "animal": "fox",          // owl, fox, wolf, dog, cat, bear, rabbit, otter, deer, squirrel, panda, raccoon, beaver, bird. Default: picked from the strongest traits
       "outfit": "hoodie",       // tee, hoodie, sweater, jacket
       "outfit_color": "violet", // navy, amber, lilac, aqua, blue, rose, ochre, green, violet, rust, black
       "eyes": "dots",           // dots, sleepy, glasses, sunglasses
-      "props": ["moon", "repeat", "plane"]  // up to 3: moon, coffee, plane, laptop, repeat, compass, sun, heart, bolt, star, sparkle, note
+      "props": ["moon", "repeat", "plane"]  // up to 3: moon, coffee, plane, laptop, repeat, compass, sun, heart, bolt, star, sparkle, book, pencil, gamepad, film, note
     }
   },
   "taste": { "h": "Your taste, in five directions.", "lede": "Which directions lead and what that combination says about a person." },
@@ -101,6 +100,10 @@ Habits say as much as genres: loops (comfort seekers), skips (impatient, knows w
 | `countries` | a dot per country listened from |
 
 Use each chart once at most, and pick the one that proves the guess.
+
+## The animal
+
+The figurine is an animal in headphones, picked from the strongest traits (night owl → owl, explorer → fox, loyalist → dog, comfort seeker → bear, party starter → otter, romantic → deer, globetrotter → bird, and so on). The page names it under the figure. Override it with `look.animal` only when another animal clearly fits the character better, and let the portrait play along with it if you like.
 
 ## Character name
 

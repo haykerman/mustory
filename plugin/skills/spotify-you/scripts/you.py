@@ -206,7 +206,14 @@ def main():
                loop=loop, top10=round(top10, 3), countries=countries, trips=trips, weekend=round(weekend, 3),
                skip=round(skip, 3), picked=round(picked, 3), shuffle=round(shuffle, 3), night=round(night, 3),
                coverage=round(coverage, 3), tagged=len(tagged), extended=ext,
-               top_artists=[n for _, _, n in artists[:12]])
+               top_artists=[n for _, _, n in artists[:12]],
+               charts=['clock', 'night', 'morning', 'taste', 'dims', 'skip_years', 'shuffle_years', 'night_years', 'discovery_years', 'focus_years',
+                       'hours_years', 'loop', 'top10', 'picked', 'shuffle', 'weekend', 'countries'],
+               clock_caption='Your real 24-hour clock: when the music plays',
+               method=['This is for fun, not science. The guesses about life are playful readings of your listening, loosely inspired by music-psychology research that links taste to personality (Rentfrow and Gosling\'s five taste directions). The numbers behind each clue are real.',
+                       f'Genres were tagged by hand for {len(tagged)} of your top artists, covering {pct(coverage)}% of their hours. Focus and sleep audio is left out of taste.',
+                       'Each trait is scored 0–100 from fixed thresholds, so the same history always gets the same traits and two people\'s pages can be compared. 60 or more earns a badge.',
+                       f"Source: a Spotify {'Extended streaming history' if ext else 'Account data (last 12 months only)'} export. Private-session plays are never listed."])
     json.dump(out, open(W('you_data.json'), 'w', encoding='utf-8'), ensure_ascii=False, indent=1)
 
     F = ['# Facts for the "you" page (quote numbers from here or facts.md)',
