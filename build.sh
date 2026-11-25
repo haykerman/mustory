@@ -4,7 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 status=0
 for f in takeout.py classify.py spotify.py; do
-  copies=(skills/*/scripts/"$f")
+  copies=(plugin/skills/*/scripts/"$f")
   [ -e "${copies[0]}" ] || continue
   for c in "${copies[@]:1}"; do
     if ! cmp -s "${copies[0]}" "$c"; then
@@ -15,9 +15,9 @@ for f in takeout.py classify.py spotify.py; do
 done
 [ "$status" -eq 0 ] || { echo "Fix the copies above, then run ./build.sh again."; exit 1; }
 rm -rf dist && mkdir dist
-find skills -name __pycache__ -prune -exec rm -rf {} +
-for skill in skills/*/; do
+find plugin/skills -name __pycache__ -prune -exec rm -rf {} +
+for skill in plugin/skills/*/; do
   name="$(basename "$skill")"
-  (cd skills && zip -qr "../dist/$name.zip" "$name" -x '*.DS_Store')
+  (cd plugin/skills && zip -qr "../../dist/$name.zip" "$name" -x '*.DS_Store')
   echo "dist/$name.zip"
 done

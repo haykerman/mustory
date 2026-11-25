@@ -5,7 +5,7 @@ set -euo pipefail
 here="$(cd "$(dirname "$0")" && pwd)"
 dest="${CLAUDE_SKILLS_DIR:-$HOME/.claude/skills}"
 mkdir -p "$dest"
-for skill in "$here"/skills/*/; do
+for skill in "$here"/plugin/skills/*/; do
   name="$(basename "$skill")"
   target="$dest/$name"
   if [ -L "$target" ]; then
