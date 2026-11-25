@@ -1,0 +1,19 @@
+{
+  "name": "mustory",
+  "description": "Your music and video history, told back to you: Wrapped-style story pages from your own YouTube and Spotify data exports, any time of year.",
+  "version": "0.1.0",
+  "author": {
+    "name": "haykerman"
+  },
+  "homepage": "https://github.com/haykerman/mustory",
+  "repository": "https://github.com/haykerman/mustory",
+  "keywords": [
+    "spotify",
+    "youtube",
+    "wrapped",
+    "music",
+    "listening history",
+    "data export",
+    "personal stats"
+  ]
+}

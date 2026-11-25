@@ -9,7 +9,12 @@ Turns a Spotify personal-data export into a long, scrolling, Wrapped-style page 
 
 Scripts do every count and draw every chart. You do what needs judgment: mark focus and sleep audio, tag moods, and write the story. Every number in the story must come from `facts.md`.
 
-All scripts are stdlib Python 3.9+. `$SKILL` below is the folder this SKILL.md is in (usually `~/.claude/skills/spotify-wrapped`). Run them with `python3 -I` from any folder.
+All scripts are stdlib Python 3.9+. `$SKILL` is this skill's base directory (shown when the skill loads; for a manual install, `~/.claude/skills/spotify-wrapped`). Run them with `python3 -I` from any folder.
+
+
+## Talking to the person
+
+Many people running this aren't technical. In conversation, never mention files, JSON, scripts, folders or Python unless they ask: say "your YouTube history", "a few channels I need to sort", "your page". Decide the timezone (the computer's) and the work folder yourself and mention each in one plain line. Before the first script, check `python3 --version` (3.9+); if it's missing, the `start` skill has plain-language install steps. If they don't have their export yet, the `start` skill has step-by-step download instructions.
 
 ## 1. Get the export
 
@@ -26,14 +31,14 @@ If there is no export, give these steps: open spotify.com/account/privacy while 
 
 Spotify stores UTC. Use the machine's zone unless they say they lived elsewhere; ask "Which city were you in for most of these years?" if unsure, and pass an IANA name. Streams abroad are still shown in that zone (the footer says so). `--southern` flips seasons.
 
-Pick a work folder they can keep, e.g. `~/spotify-wrapped/` (the script creates it; an existing one is fine, outputs are overwritten). Use the same flags on every run. The export holds IP addresses and private-session plays: the scripts never keep IPs, and the page never lists private-session tracks. Keep everything local and don't web-search their tracks.
+Pick a work folder they can keep, e.g. `~/Documents/mustory/spotify-wrapped/` (the script creates it; an existing one is fine, outputs are overwritten). Use the same flags on every run. The export holds IP addresses and private-session plays: the scripts never keep IPs, and the page never lists private-session tracks. Keep everything local and don't web-search their tracks.
 
 "Today" defaults to now; pass `--today YYYY-MM-DD` only to reproduce a run.
 
 ## 3. First pass
 
 ```bash
-python3 -I "$SKILL/scripts/analyze.py" --export ~/Downloads/my_spotify_data.zip --work ~/spotify-wrapped --tz Europe/Berlin
+python3 -I "$SKILL/scripts/analyze.py" --export ~/Downloads/my_spotify_data.zip --work ~/Documents/mustory/spotify-wrapped --tz Europe/Berlin
 ```
 
 ## 4. Mark focus audio and moods, then re-run
@@ -63,7 +68,7 @@ Read all of `facts.md` and `odd_candidates.tsv`, then `references/story.md`, and
 ## 6. Render and fact-check
 
 ```bash
-python3 -I "$SKILL/scripts/render.py" --work ~/spotify-wrapped
+python3 -I "$SKILL/scripts/render.py" --work ~/Documents/mustory/spotify-wrapped
 ```
 
 It checks every number of 10 or more in the story against facts.md (song, artist and album names are skipped). If one is missing it lists it, writes nothing, and exits with code 2. Correct it from facts.md, or, if you computed it from facts.md numbers, add it to `"derived"` in story.json with how. Render again until it prints "Fact check passed". It may also print a PAIRING CHECK: a sentence that puts a number next to an artist or song with no facts.md line holding both. That catches a number that changed but still exists elsewhere in facts.md. Check each one; it is a warning, and a correct sentence can stay.
@@ -71,7 +76,7 @@ It checks every number of 10 or more in the story against facts.md (song, artist
 ## 7. Deliver
 
 - With an Artifact/publish tool: publish `wrapped.html` (starts private) and give the link; say only they can see it until they share it.
-- Otherwise `open ~/spotify-wrapped/wrapped.html` or give the path.
+- Otherwise `open ~/Documents/mustory/spotify-wrapped/wrapped.html` or give the path.
 
 ## Common mistakes
 
