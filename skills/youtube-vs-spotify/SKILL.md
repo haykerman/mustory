@@ -9,7 +9,12 @@ Lines up a YouTube watch history and a Spotify listening history over the years 
 
 The script does every count and chart. You do three judgment calls: link artists whose names differ between apps, mark Spotify focus/sleep audio, and write the story. Every number in the story must come from `facts.md`.
 
-Stdlib Python 3.9+. `$SKILL` is the folder this SKILL.md is in (usually `~/.claude/skills/youtube-vs-spotify`). Run scripts with `python3 -I`.
+Stdlib Python 3.9+. `$SKILL` is this skill's base directory (shown when the skill loads; for a manual install, `~/.claude/skills/youtube-vs-spotify`). Run scripts with `python3 -I`.
+
+
+## Talking to the person
+
+Many people running this aren't technical. In conversation, never mention files, JSON, scripts, folders or Python unless they ask: say "your YouTube history", "a few channels I need to sort", "your page". Decide the timezone (the computer's) and the work folder yourself and mention each in one plain line. Before the first script, check `python3 --version` (3.9+); if it's missing, the `start` skill has plain-language install steps. If they don't have their export yet, the `start` skill has step-by-step download instructions.
 
 ## 1. Get both exports
 
@@ -20,10 +25,10 @@ If the `spotify-wrapped` skill already ran, its `labels.json` (`functional`, `no
 
 ## 2. First pass
 
-Use the machine's timezone unless they lived elsewhere (IANA name). Pick a work folder they can keep, e.g. `~/youtube-vs-spotify/` (created if missing; reruns overwrite outputs). Use the same flags every run.
+Use the machine's timezone unless they lived elsewhere (IANA name). Pick a work folder they can keep, e.g. `~/Documents/mustory/youtube-vs-spotify/` (created if missing; reruns overwrite outputs). Use the same flags every run.
 
 ```bash
-python3 -I "$SKILL/scripts/compare.py" --youtube ~/Downloads/takeout-XXXX.zip --spotify ~/Downloads/my_spotify_data.zip --work ~/youtube-vs-spotify --tz Europe/Berlin
+python3 -I "$SKILL/scripts/compare.py" --youtube ~/Downloads/takeout-XXXX.zip --spotify ~/Downloads/my_spotify_data.zip --work ~/Documents/mustory/youtube-vs-spotify --tz Europe/Berlin
 ```
 
 ## 3. Aliases and labels, then re-run
@@ -52,7 +57,7 @@ Read `facts.md`, then `references/story.md`, and write `story.json` in the work 
 ## 5. Render and fact-check
 
 ```bash
-python3 -I "$SKILL/scripts/render.py" --work ~/youtube-vs-spotify
+python3 -I "$SKILL/scripts/render.py" --work ~/Documents/mustory/youtube-vs-spotify
 ```
 
 Every number of 10 or more in the story must appear in facts.md (artist and song names are skipped). If one doesn't, it lists it, writes nothing and exits with code 2. Correct it, or add it to `"derived"` with how you computed it. Render again until it prints "Fact check passed". The check proves a number exists in facts.md, not that it belongs to your sentence: quote the right line. It may also print a PAIRING CHECK: a sentence that puts a number next to an artist or song with no facts.md line holding both. That catches a number that changed but still exists elsewhere in facts.md. Check each one; it is a warning, and a correct sentence can stay.

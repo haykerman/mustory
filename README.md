@@ -12,34 +12,41 @@ Scripts do every count and draw every chart. Claude does the parts that need jud
 
 ## Install
 
-Requires Claude Code and Python 3.9+ (stdlib only, nothing to pip install).
+You need Claude Code (the Claude desktop app's Code tab, the terminal app, or an IDE extension) and Python 3.9 or newer. If Python is missing, Claude tells you how to get it.
 
-```bash
-git clone <this repo> mustory && cd mustory
-./install.sh
+In a Claude Code chat, type:
+
+```
+/plugin install mustory --marketplace haykerman/mustory
 ```
 
-`install.sh` links the three skills into `~/.claude/skills/`, so edits in this repo apply right away. To share a single skill as a zip, run `./build.sh` and send the file from `dist/`.
+That's it. To update later: `/plugin update mustory`.
+
+**For developers working on mustory:** clone the repo and run `./install.sh` instead. It links the skills into `~/.claude/skills/`, so edits apply right away (don't also install the plugin, or every skill shows up twice). `./build.sh` checks the shared scripts are in sync and zips each skill into `dist/` for sharing one on its own.
 
 ## Get your data
+
+Not sure what you need? Say "help me get started with mustory" and Claude walks you through it, step by step.
 
 - **YouTube:** takeout.google.com → **Deselect all** → **YouTube and YouTube Music** → "All YouTube data included": keep only **history** → "Multiple formats": history as **JSON** → export. Use the Google account you actually watch on.
 - **Spotify:** spotify.com/account/privacy → tick **Extended streaming history** → request. Spotify emails you when it's ready (often a few days, up to 30). The quicker "Account data" package works too, but covers only the last 12 months.
 
 ## Run
 
-Open Claude Code anywhere and say one of:
+Open a Claude Code chat anywhere and say one of:
 
 - "Make my YouTube Wrapped."
 - "Make my Spotify Wrapped."
 - "Compare my YouTube and Spotify."
 
-Claude finds the export in `~/Downloads` (or asks), picks a work folder such as `~/spotify-wrapped/`, and walks you through the rest. You get a single HTML page; in Claude apps that can publish, it becomes a private link you can share.
+Claude finds your download in Downloads (or asks), keeps its working files in `Documents/mustory/`, and walks you through the rest. You get a single HTML page; in Claude apps that can publish, it becomes a private link you can share.
 
 ## Repo layout
 
 ```
+.claude-plugin/         plugin.json and marketplace.json (the plugin install reads these)
 skills/
+  start/                front door: what you need, how to download it, plain-language setup
   youtube-wrapped/      SKILL.md, scripts/, assets/template.html, references/story.md
   spotify-wrapped/      same shape
   youtube-vs-spotify/   same shape
@@ -53,3 +60,7 @@ Each skill is self-contained so it can be shared on its own. That means `takeout
 ## Privacy
 
 Exports contain everything you've watched and played, plus IP addresses on Spotify. The scripts never keep IP addresses, never list private-session tracks, unzip into a temporary folder that's deleted when they finish, and write only to the work folder you choose. Keep exports and work folders out of this repo (`.gitignore` already does).
+
+## License
+
+MIT. See [LICENSE](LICENSE).

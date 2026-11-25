@@ -9,7 +9,12 @@ Turns a Google Takeout YouTube history export into a long, scrolling, Wrapped-st
 
 Scripts do every count and draw every chart. You do the three things that need judgment: label their channels, tag their artists' moods, and write the story. Every number in the story must come from `facts.md`.
 
-All scripts are stdlib Python 3.9+. In the commands below, `$SKILL` is the folder this SKILL.md is in (usually `~/.claude/skills/youtube-wrapped`). Run them with `python3 -I` from any folder.
+All scripts are stdlib Python 3.9+. In the commands below, `$SKILL` is this skill's base directory (shown when the skill loads; for a manual install, `~/.claude/skills/youtube-wrapped`). Run them with `python3 -I` from any folder.
+
+
+## Talking to the person
+
+Many people running this aren't technical. In conversation, never mention files, JSON, scripts, folders or Python unless they ask: say "your YouTube history", "a few channels I need to sort", "your page". Decide the timezone (the computer's) and the work folder yourself and mention each in one plain line. Before the first script, check `python3 --version` (3.9+); if it's missing, the `start` skill has plain-language install steps. If they don't have their export yet, the `start` skill has step-by-step download instructions.
 
 ## 1. Get the export
 
@@ -26,14 +31,14 @@ HTML exports work only in English. If `analyze.py` says it can't read dates, ask
 
 Times are shown in one zone. Use the machine's zone unless they say they lived somewhere else; ask "Which city were you in for most of these years?" if unsure, and pass an IANA name (`Europe/Berlin`). Add `--southern` for southern-hemisphere seasons.
 
-Pick a work folder they can keep, e.g. `~/youtube-wrapped/` (the script creates it). Their history is private: keep everything local, and don't paste titles into web searches.
+Pick a work folder they can keep, e.g. `~/Documents/mustory/youtube-wrapped/` (the script creates it). Their history is private: keep everything local, and don't paste titles into web searches.
 
 "Today" defaults to now in that zone. It sets "On this day" and what counts as forgotten (no plays in 18 months); pass `--today YYYY-MM-DD` only to reproduce an earlier run.
 
 ## 3. First pass
 
 ```bash
-python3 -I "$SKILL/scripts/analyze.py" --export ~/Downloads/takeout-XXXX.zip --work ~/youtube-wrapped --tz Europe/Berlin
+python3 -I "$SKILL/scripts/analyze.py" --export ~/Downloads/takeout-XXXX.zip --work ~/Documents/mustory/youtube-wrapped --tz Europe/Berlin
 ```
 
 It prints the play count and the unclassified share ("Other" plus "…-language other").
@@ -68,7 +73,7 @@ Read all of `facts.md` and `odd_candidates.tsv`, then read `references/story.md`
 ## 6. Render and fact-check
 
 ```bash
-python3 -I "$SKILL/scripts/render.py" --work ~/youtube-wrapped
+python3 -I "$SKILL/scripts/render.py" --work ~/Documents/mustory/youtube-wrapped
 ```
 
 It checks every number of 10 or more in the story against facts.md. Video titles and clock times are skipped. If a number is missing, it lists it, writes nothing, and exits with code 2. Correct the number from facts.md. If you computed it from facts.md numbers (a sum, a difference), add it to `"derived": {"745": "Feb+Mar+Apr+May Eurovision plays"}` in story.json. Render again until it prints "Fact check passed". Write numbers of 10 or more as digits, not words, so they get checked. It may also print a PAIRING CHECK: a sentence that puts a number next to an artist or song with no facts.md line holding both. That catches a number that changed but still exists elsewhere in facts.md. Check each one; it is a warning, and a correct sentence can stay.
@@ -76,15 +81,15 @@ It checks every number of 10 or more in the story against facts.md. Video titles
 ## 7. Deliver
 
 - If you have an Artifact/publish tool, publish `wrapped.html` (it starts private) and give them the link. Tell them only they can see it until they share it.
-- Otherwise run `open ~/youtube-wrapped/wrapped.html` (macOS) or give them the path.
+- Otherwise run `open ~/Documents/mustory/youtube-wrapped/wrapped.html` (macOS) or give them the path.
 
 Offer the optional database for follow-up questions ("what was I watching the week I moved?"):
 
 ```bash
-python3 -I "$SKILL/scripts/build_db.py" --export <zip> --work ~/youtube-wrapped --tz Europe/Berlin
+python3 -I "$SKILL/scripts/build_db.py" --export <zip> --work ~/Documents/mustory/youtube-wrapped --tz Europe/Berlin
 ```
 
-Then answer questions with `sqlite3 ~/youtube-wrapped/history.db` (tables `watches`, `searches`, view `videos`, full-text `titles_fts`).
+Then answer questions with `sqlite3 ~/Documents/mustory/youtube-wrapped/history.db` (tables `watches`, `searches`, view `videos`, full-text `titles_fts`).
 
 ## Common mistakes
 
