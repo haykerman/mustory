@@ -1,0 +1,21 @@
+# Build output
+dist/
+__pycache__/
+*.pyc
+.DS_Store
+
+# Personal data never belongs here: exports, work folders, databases, rendered pages
+*.zip
+*.db
+takeout*/
+Takeout/
+my_spotify_data*/
+Spotify Extended Streaming History/
+**/facts.md
+**/data.json
+**/story.json
+**/labels.json
+**/moods.json
+**/aliases.json
+**/wrapped.html
+**/compare.html
