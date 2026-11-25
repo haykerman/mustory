@@ -1,6 +1,18 @@
-# mustory
+<p align="center">
+  <img src="plugin/.claude-plugin/icon.png" alt="mustory icon: a stack of story cards with a music note" width="128" height="128">
+</p>
 
-Your music and video history, told back to you. mustory is a [Claude Code](https://claude.com/claude-code) plugin that turns your own data exports into year-in-review story pages, any time of year, for any span of years:
+<h1 align="center">mustory</h1>
+
+<p align="center">Your music and video history, told back to you.</p>
+
+<p align="center">
+  <a href="https://haykerman.github.io/mustory/demo/spotify.html"><img src="docs/demo/screenshot.png" alt="Top of a demo story page: 2,156 hours. Five years. One very clear shift." width="720"></a>
+  <br>
+  <a href="https://haykerman.github.io/mustory/demo/spotify.html"><b>See a demo page</b></a> (made from invented data)
+</p>
+
+mustory is a [Claude Code](https://claude.com/claude-code) plugin that turns your own data exports into year-in-review story pages, any time of year, for any span of years:
 
 | Skill | Needs | Makes |
 |---|---|---|

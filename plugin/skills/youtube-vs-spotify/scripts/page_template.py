@@ -2,7 +2,9 @@
 
 Kept as a Python string so the plugin ships only text files the plugin directory accepts.
 """
-TEMPLATE = r'''<title>__TITLE__</title>
+TEMPLATE = r'''<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>__TITLE__</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -29,7 +31,7 @@ TEMPLATE = r'''<title>__TITLE__</title>
   --body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
   --mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 }
-body { background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+body { margin: 0; background: var(--ground); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
 a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); }
 a:hover { text-decoration-color: currentColor; }
 a:focus-visible, button:focus-visible { outline: 3px solid var(--butter); outline-offset: 2px; border-radius: 4px; }
