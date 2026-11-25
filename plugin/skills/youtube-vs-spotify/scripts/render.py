@@ -109,7 +109,8 @@ def main():
         print(f'PAIRING CHECK: {len(unpaired)} sentence(s) put a number next to a name with no facts.md line holding both. Check each:')
         for n_, b_, s_ in unpaired:
             print(f"  {n_} + {', '.join(b_)}  ←  {s_}")
-    tpl = open(os.path.join(HERE, '..', 'assets', 'template.html'), encoding='utf-8').read()
+    sys.path.insert(0, HERE)
+    from page_template import TEMPLATE as tpl
     safe = lambda o: json.dumps(o, ensure_ascii=False, separators=(',', ':'), default=str).replace('</', '<\\/')  # noqa: E731
     out = (tpl.replace('__TITLE__', html.escape(story['title']))
               .replace('__DATA__', safe(data)).replace('__STORY__', safe(story)))

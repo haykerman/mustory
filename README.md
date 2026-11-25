@@ -50,7 +50,7 @@ plugin/                           the plugin itself (only this folder is shipped
   .claude-plugin/                 plugin.json and icon.png
   skills/
     start/                        front door: what you need, how to download it, plain-language setup
-    youtube-story/                SKILL.md, scripts/, assets/template.html, references/story.md
+    youtube-story/                SKILL.md, scripts/ (incl. page_template.py), references/story.md
     spotify-story/                same shape
     youtube-vs-spotify/           same shape
   README.md, LICENSE

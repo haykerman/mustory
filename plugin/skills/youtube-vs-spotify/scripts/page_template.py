@@ -1,4 +1,8 @@
-<title>__TITLE__</title>
+"""The page template: HTML with __TITLE__, __DATA__ and __STORY__ placeholders that render.py fills.
+
+Kept as a Python string so the plugin ships only text files the plugin directory accepts.
+"""
+TEMPLATE = r'''<title>__TITLE__</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap">
@@ -312,3 +316,4 @@ $('l-method').innerHTML = [
   ...(S.method_extra || []),
 ].map(t => `<li>${md(t)}</li>`).join('');
 </script>
+'''

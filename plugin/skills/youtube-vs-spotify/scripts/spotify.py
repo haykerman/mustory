@@ -21,9 +21,6 @@ from zoneinfo import ZoneInfo
 
 
 def system_tz():
-    tz = os.environ.get('TZ')
-    if tz:
-        return tz
     p = os.path.realpath('/etc/localtime')
     return p.split('zoneinfo/', 1)[1] if 'zoneinfo/' in p else 'UTC'
 

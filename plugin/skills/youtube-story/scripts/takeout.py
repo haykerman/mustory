@@ -18,9 +18,6 @@ from zoneinfo import ZoneInfo
 
 def system_tz():
     """IANA name of this machine's zone, or UTC."""
-    tz = os.environ.get('TZ')
-    if tz:
-        return tz
     try:
         p = os.path.realpath('/etc/localtime')
         if 'zoneinfo/' in p:
