@@ -17,6 +17,7 @@ Write like a helpful friend, not a developer. Never mention file names, JSON, sc
 |---|---|---|
 | A story of their YouTube watching | YouTube history from Google Takeout | `youtube-story` |
 | A story of their Spotify listening | Spotify data download | `spotify-story` |
+| What their music says about them as a person (a character, guesses about their life, a share card) | Spotify data download | `spotify-you` |
 | How their YouTube and Spotify habits differ | Both | `youtube-vs-spotify` |
 
 If they're unsure, offer the one whose data they already have.

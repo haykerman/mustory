@@ -9,7 +9,7 @@
 <p align="center">
   <a href="https://haykerman.github.io/mustory/demo/spotify.html"><img src="docs/demo/screenshot.png" alt="Top of a demo story page: 2,156 hours. Five years. One very clear shift." width="720"></a>
   <br>
-  <a href="https://haykerman.github.io/mustory/demo/spotify.html"><b>See a demo page</b></a> (made from invented data)
+  Demo pages, made from invented data: <a href="https://haykerman.github.io/mustory/demo/spotify.html"><b>the story</b></a> · <a href="https://haykerman.github.io/mustory/demo/you.html"><b>the "you" page</b></a>
 </p>
 
 mustory is a [Claude Code](https://claude.com/claude-code) plugin that turns your own data exports into year-in-review story pages, any time of year, for any span of years:
@@ -18,6 +18,7 @@ mustory is a [Claude Code](https://claude.com/claude-code) plugin that turns you
 |---|---|---|
 | `youtube-story` | Google Takeout export of YouTube history | Eras, obsessions, forgotten favorites, seasons, night-owl hours, rabbit holes, rituals, odd watches, a personality read |
 | `spotify-story` | Spotify data export (Extended streaming history is best) | Lifetime hours, loops, the skip button, autopilot vs songs you picked, focus music, devices, travel, discovery, marathons |
+| `spotify-you` | Spotify data export | A page about you, not the music: an invented character with a drawn figurine, guesses about your life from your taste and habits, trait badges and a share card |
 | `youtube-vs-spotify` | Both of the above | Which app does what, when you use each, where artists are found first, artists that live on one app, songs you play everywhere |
 
 Scripts do every count and draw every chart. Claude does the parts that need judgment (labeling channels, tagging moods, writing the story), and a fact checker makes sure every number in the story comes from your data. Everything stays on your computer.
@@ -64,6 +65,7 @@ plugin/                           the plugin itself (only this folder is shipped
     start/                        front door: what you need, how to download it, plain-language setup
     youtube-story/                SKILL.md, scripts/ (incl. page_template.py), references/story.md
     spotify-story/                same shape
+    spotify-you/                  same shape
     youtube-vs-spotify/           same shape
   README.md, LICENSE
 docs/ideas.md                     the question catalog the pages answer, plus ideas not built yet

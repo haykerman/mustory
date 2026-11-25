@@ -7,6 +7,7 @@ Your music and video history, told back to you. mustory turns your own YouTube a
 - **start**: the front door. Works out what you want, finds your downloads, and gives step-by-step instructions for getting your data from Google Takeout and Spotify.
 - **youtube-story**: a story of your YouTube watching, from a Google Takeout export.
 - **spotify-story**: a story of your Spotify listening, from Spotify's data download (Extended streaming history is best).
+- **spotify-you**: a playful page about you rather than the music: an invented character, guesses about your life from your taste and habits ("your friends probably think you're…"), trait badges and a share card.
 - **youtube-vs-spotify**: how the two apps fit into your life: which one you use when, where you find artists first, and the songs you play everywhere.
 
 ## How to use

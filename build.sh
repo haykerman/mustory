@@ -13,6 +13,11 @@ for f in takeout.py classify.py spotify.py; do
     fi
   done
 done
+# spotify-you runs spotify-story's analysis unchanged (youtube-story has its own analyze.py)
+if ! cmp -s plugin/skills/spotify-story/scripts/analyze.py plugin/skills/spotify-you/scripts/analyze.py; then
+  echo "out of sync: plugin/skills/spotify-story/scripts/analyze.py vs plugin/skills/spotify-you/scripts/analyze.py"
+  status=1
+fi
 [ "$status" -eq 0 ] || { echo "Fix the copies above, then run ./build.sh again."; exit 1; }
 rm -rf dist && mkdir dist
 find plugin/skills -name __pycache__ -prune -exec rm -rf {} +

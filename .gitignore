@@ -19,3 +19,10 @@ Spotify Extended Streaming History/
 **/aliases.json
 **/story.html
 **/compare.html
+.superpowers/
+genres.json
+you.json
+you_data.json
+you_facts.md
+you.html
+!docs/demo/you.html

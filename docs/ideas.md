@@ -40,6 +40,14 @@ Everything above that fits music, plus:
 - **Discovery:** new artists per year and how much of each year went to them.
 - **Marathons:** the longest sessions, including playlists left running.
 
+### You (`spotify-you`)
+
+- **A character:** an invented person who sums up the earned traits, with a drawn figurine and a novel-style portrait.
+- **Traits:** 25 fixed traits scored 0–100 from taste and habits, so friends can compare.
+- **Taste directions:** genres mapped to five directions (Mellow, Unpretentious, Sophisticated, Intense, Contemporary), loosely after music-psychology research.
+- **Life guesses:** friends, parties, work, holidays, karaoke, "you'd probably never…", each with its music clue.
+- **This or that, a day in the life, green and red flags, a share card.**
+
 ### Both (`youtube-vs-spotify`)
 
 - Which app does the work each year.
