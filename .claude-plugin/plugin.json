@@ -15,5 +15,6 @@
     "listening history",
     "data export",
     "personal stats"
-  ]
+  ],
+  "license": "MIT"
 }

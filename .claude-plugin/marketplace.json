@@ -19,7 +19,8 @@
         "youtube",
         "wrapped",
         "music"
-      ]
+      ],
+      "license": "MIT"
     }
   ]
 }

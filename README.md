@@ -60,3 +60,7 @@ Each skill is self-contained so it can be shared on its own. That means `takeout
 ## Privacy
 
 Exports contain everything you've watched and played, plus IP addresses on Spotify. The scripts never keep IP addresses, never list private-session tracks, unzip into a temporary folder that's deleted when they finish, and write only to the work folder you choose. Keep exports and work folders out of this repo (`.gitignore` already does).
+
+## License
+
+MIT. See [LICENSE](LICENSE).
